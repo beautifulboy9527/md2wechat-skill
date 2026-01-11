@@ -151,6 +151,9 @@ Examples:
 	// config command
 	rootCmd.AddCommand(configCmd)
 
+	// test-draft command
+	rootCmd.AddCommand(testHTMLCmd)
+
 	// Execute
 	if err := rootCmd.Execute(); err != nil {
 		responseError(err)
