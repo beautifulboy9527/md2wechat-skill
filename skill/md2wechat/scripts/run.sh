@@ -377,6 +377,22 @@ main() {
     local binary
     binary=$(ensure_binary) || exit $?
 
+    # Intercept generate_image command to use Python script with ModelScope
+    if [[ "$1" == "generate_image" ]]; then
+        # Check if python is available
+        if command -v python3 &>/dev/null; then
+            PYTHON_CMD="python3"
+        elif command -v python &>/dev/null; then
+            PYTHON_CMD="python"
+        else
+            error "Python is required for image generation but not found."
+            exit 1
+        fi
+        
+        "$PYTHON_CMD" "$SCRIPT_DIR/generate_image.py" "$2" "$binary"
+        exit $?
+    fi
+
     exec "$binary" "$@"
 }
 

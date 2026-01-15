@@ -1,0 +1,430 @@
+name: minimalist
+type: ai
+description: "极简主义 - 大字号，高对比度，适合沉浸式阅读"
+version: "1.0"
+style_info:
+  mood: "极简，现代"
+  colors: "黑白灰"
+  best_for: "长文阅读，随笔"
+prompt: |
+  你是一位精通微信公众号排版的设计师。请将 Markdown 转换为微信公众号兼容的 HTML。
+  
+  核心要求：
+  1. **必须使用内联样式 (Inline Styles)**：微信不支持 <style> 标签。
+  2. **解析变量**：CSS 中使用了 :root 变量，请在内联样式中直接使用对应的值（例如 var(--md-primary-color) 应替换为 #1a1a1a）。
+  3. **主容器**：在 <body> 后创建一个主 <div> 包裹所有内容。
+  4. **图片占位符**：使用 <!-- IMG:0 -->, <!-- IMG:1 --> 等格式。
+  5. **颜色保护**：所有 <p> 标签必须显式设置 color 属性。
+  
+  请严格按照以下 CSS 样式规则进行内联样式转换：
+
+  /* ==================== 全局变量与基础设置 ==================== */
+  :root {
+    --md-primary-color: #1a1a1a;
+    --md-accent-color: #404040;
+    --md-light-bg: #f8f8f8;
+    --md-border: #d0d0d0;
+    --foreground: #2a2a2a;
+    --foreground-light: #eee;
+  }
+
+  /* ==================== 段落 (核心阅读体验) ==================== */
+  p {
+    margin: 10px 0;
+    line-height: 1.95;
+    letter-spacing: 0.5px;
+    color: var(--foreground);
+    text-align: justify;
+    font-size: 18px; /* 更大的字号 */
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    text-indent: 0; /* 不缩进 */
+  }
+
+  /* ==================== 二级标题 (视觉焦点) ==================== */
+
+  h2 {
+    padding: 0.3em 1em;
+    border-radius: 30px;
+    font-size: calc(18px * 1.3); /* var(--md-font-size) assumed 18px */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  /* ==================== 三级标题 (层次分明) ==================== */
+  h3 {
+    margin: 40px 0 20px;
+    padding: 10px 0 10px 20px;
+    border-left: 5px solid var(--md-primary-color);
+    color: var(--md-primary-color);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.5;
+    background: linear-gradient(to right, rgba(26, 26, 26, 0.04), transparent 50%);
+    letter-spacing: 1px;
+  }
+
+  h4 {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 1.5em 0 0.8em 0 !important;
+    color: #1a1a1a !important;
+    font-size: 1em !important;
+    font-weight: 700 !important;
+    line-height: 1.75 !important;
+  }
+
+  /* ==================== 引用块 (卡片式设计) ==================== */
+  blockquote {
+    margin: 35px 0;
+    padding: 10px 24px;
+    color: var(--foreground-light);
+    background: var(--md-light-bg);
+    border-left: 5px solid #eee;
+    border-radius: 0 6px 6px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    position: relative;
+    font-style: normal; /* 不用斜体 */
+  }
+
+  blockquote::before {
+    content: "";
+    position: absolute;
+    left: -5px;
+    top: 0;
+    width: 5px;
+    height: 40px;
+    background: var(--md-accent-color);
+    border-radius: 0 0 3px 0;
+  }
+
+  blockquote > p {
+    margin: 0;
+    font-size: 12x;
+    line-height: 1.9;
+    color: #888;
+    padding-left: 0;
+    font-style: normal;
+    text-indent: 0;
+  }
+
+  /* ==================== 加粗 (强调重点) ==================== */
+
+  strong {
+    color: var(--md-primary-color);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    padding: 2px 4px;
+    background: linear-gradient(to bottom, transparent 65%, rgba(255, 235, 59, 0.7) 65%);
+    /* 像黄色荧光笔划过的效果 */
+    border-radius: 2px;
+  }
+
+  /* ==================== 一级标题 ==================== */
+  h1 {
+    display: block;
+    padding: 18px 0;
+    margin: 50px 0 40px;
+    color: var(--md-primary-color);
+    font-size: 26px;
+    font-weight: 800;
+    text-align: center;
+    letter-spacing: 3px;
+    border-top: 3px solid var(--md-primary-color);
+    border-bottom: 3px solid var(--md-primary-color);
+    position: relative;
+  }
+
+  /* ==================== 四级~六级标题 ==================== */
+  h4 {
+    margin: 35px 0 15px;
+    color: var(--md-primary-color);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--md-border);
+  }
+
+  h5 {
+    margin: 30px 0 12px;
+    color: var(--md-accent-color);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  h6 {
+    margin: 25px 0 12px;
+    color: var(--foreground-light);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  /* ==================== GFM 警告块 ==================== */
+  .alert-title-note, .alert-title-tip, .alert-title-info, 
+  .alert-title-important, .alert-title-warning, .alert-title-caution {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    margin-bottom: 0.8em;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+  }
+
+  .alert-title-note { color: #1a1a1a; }
+  .alert-title-tip { color: #2a2a2a; }
+  .alert-title-info { color: #3a3a3a; }
+  .alert-title-important { color: #000000; }
+  .alert-title-warning { color: #4a4a4a; }
+  .alert-title-caution { color: #1a1a1a; }
+
+  .alert-icon-note { fill: #1a1a1a; }
+  .alert-icon-tip { fill: #2a2a2a; }
+  .alert-icon-info { fill: #3a3a3a; }
+  .alert-icon-important { fill: #000000; }
+  .alert-icon-warning { fill: #4a4a4a; }
+  .alert-icon-caution { fill: #1a1a1a; }
+
+  blockquote.alert-note,
+  div.alert-note {
+    background: var(--md-light-bg);
+    border-left: 5px solid var(--md-primary-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    padding: 20px 24px;
+    margin: 35px 0;
+    border-radius: 0 6px 6px 0;
+  }
+
+  blockquote.alert-note > p {
+    color: var(--foreground);
+    font-size: 17px;
+    line-height: 1.9;
+    font-style: normal;
+  }
+
+  /* ==================== 代码块 ==================== */
+  pre.code__pre,
+  .hljs.code__pre {
+    margin: 30px 0;
+    padding: 20px !important;
+    background: var(--md-light-bg);
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.7;
+    overflow-x: auto;
+    border: 1px solid var(--md-border);
+    border-left: 4px solid var(--md-primary-color);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+
+  /* ==================== 行内代码 ==================== */
+  code {
+    font-size: 16px;
+    color: var(--md-primary-color);
+    background: rgba(26, 26, 26, 0.06);
+    padding: 3px 8px;
+    margin: 0 3px;
+    border-radius: 4px;
+    font-family: "SF Mono", "Menlo", "Monaco", "Consolas", monospace;
+    font-weight: 500;
+    border: 1px solid rgba(26, 26, 26, 0.1);
+  }
+
+  pre.code__pre > code,
+  .hljs.code__pre > code {
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    margin: 0;
+    font-weight: normal;
+    border: none;
+  }
+
+  /* ==================== 列表 ==================== */
+  ul, ol {
+    padding-left: 2em;
+    margin: 24px 0;
+    color: var(--foreground);
+  }
+
+  li {
+    margin: 12px 0;
+    line-height: 1.9;
+    font-size: 18px;
+  }
+
+  ul li::marker {
+    color: var(--md-primary-color);
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+
+  ol li::marker {
+    color: var(--md-primary-color);
+    font-weight: bold;
+  }
+
+  /* ==================== 链接 ==================== */
+  a {
+    color: var(--md-primary-color);
+    text-decoration: none;
+    border-bottom: 2px solid var(--md-primary-color);
+    padding-bottom: 1px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+  }
+
+  a:hover {
+    color: var(--md-accent-color);
+    border-bottom-color: var(--md-accent-color);
+    background: rgba(26, 26, 26, 0.03);
+  }
+
+  /* ==================== 强调 ==================== */
+  em {
+    font-style: normal; /* 不用斜体 */
+    color: var(--foreground);
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-color: var(--md-border);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+
+  /* ==================== 图片 ==================== */
+  img {
+    display: block;
+    max-width: 100%;
+    margin: 10px auto;
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    border: 1px solid var(--md-border);
+  }
+
+  /* ==================== 分隔线 ==================== */
+  hr {
+    height: 1px;
+    padding: 0;
+    margin: 40px 0;
+    border: 0;
+    background: linear-gradient(
+      to right, 
+      transparent, 
+      var(--md-primary-color) 20%, 
+      var(--md-primary-color) 80%, 
+      transparent
+    );
+    opacity: 0.25;
+    text-align: center;
+    position: relative;
+  }
+
+  /* ==================== 表格 ==================== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 35px 0;
+    font-size: 16px;
+    text-align: left;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  thead {
+    background: var(--md-light-bg);
+    border-top: 3px solid var(--md-primary-color);
+    border-bottom: 2px solid var(--md-primary-color);
+  }
+
+  th {
+    padding: 14px 16px;
+    font-weight: 700;
+    color: var(--md-primary-color);
+    border: none;
+    letter-spacing: 0.5px;
+    font-size: 15px;
+  }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--md-border);
+    color: var(--foreground);
+    border-left: none;
+    border-right: none;
+  }
+
+  tbody tr:hover {
+    background: rgba(26, 26, 26, 0.02);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: 2px solid var(--md-primary-color);
+  }
+
+  /* ==================== 图表说明 ==================== */
+  figure {
+    margin: 40px 0;
+    text-align: center;
+  }
+
+  figcaption,
+  .md-figcaption {
+    margin-top: 14px;
+    text-align: center;
+    color: var(--foreground-light);
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    font-style: normal;
+    font-weight: 500;
+  }
+
+  /* ==================== 脚注 ==================== */
+  p.footnotes {
+    margin: 50px 0 10px;
+    padding-top: 24px;
+    font-size: 14px;
+    color: #999;
+    border-top: 2px solid var(--md-border);
+  }
+
+  /* ==================== KaTeX 公式 ==================== */
+  .katex-inline {
+    padding: 0 4px;
+  }
+
+  .katex-block {
+    margin: 30px 0;
+    padding: 20px;
+    background: var(--md-light-bg);
+    border-radius: 6px;
+    border-left: 4px solid var(--md-primary-color);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+
+  /* ==================== 标记高亮 ==================== */
+  .markup-highlight {
+    background: linear-gradient(to bottom, transparent 50%, #fff4b3 50%);
+    padding: 2px 4px;
+    color: var(--md-primary-color);
+    font-weight: 500;
+  }
+
+  .markup-underline {
+    text-decoration: underline;
+    text-decoration-color: var(--md-primary-color);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+
+  .markup-wavyline {
+    text-decoration: underline wavy;
+    text-decoration-color: var(--md-primary-color);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+  
+  输出要求：
+  - 只输出 HTML 代码，包裹在 Markdown 代码块中。
+  - 不要包含任何解释文字。

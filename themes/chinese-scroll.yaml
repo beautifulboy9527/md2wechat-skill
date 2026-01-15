@@ -1,0 +1,390 @@
+name: chinese-scroll
+type: ai
+description: "中国传统 - 卷轴，水墨，印章风格"
+version: "1.0"
+style_info:
+  mood: "古典，雅致"
+  colors: "墨黑，朱红，宣纸白"
+  best_for: "文化，历史，诗词"
+prompt: |
+  你是一位精通微信公众号排版的设计师。请将 Markdown 转换为微信公众号兼容的 HTML。
+  
+  核心要求：
+  1. **必须使用内联样式 (Inline Styles)**：微信不支持 <style> 标签。
+  2. **主容器**：在 <body> 后创建一个主 <div> 包裹所有内容。
+  3. **图片占位符**：使用 <!-- IMG:0 -->, <!-- IMG:1 --> 等格式。
+  4. **颜色保护**：所有 <p> 标签必须显式设置 color 属性。
+  
+  请严格按照以下 CSS 样式规则进行内联样式转换：
+
+  /* 一级标题样式 - 卷轴风格 */
+  h1 {
+    display: block;
+    padding: 0.8em 0;
+    margin: 2em auto 1.5em;
+    color: #8b1e22;
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 0.1em;
+    position: relative;
+    line-height: 1.5;
+    width: 80%;
+    /* 微妙的纹理背景 */
+    background: 
+      repeating-linear-gradient(
+        45deg,
+        rgba(139,30,34,0.03),
+        rgba(139,30,34,0.03) 2px,
+        transparent 2px,
+        transparent 8px
+      );
+    border-top: 2px solid #8b1e22;
+    border-bottom: 2px solid #8b1e22;
+  }
+
+  h1::before, h1::after {
+    content: "※";
+    position: absolute;
+    top: 50%;
+    font-size: 1.5em;
+    color: #8b1e22;
+    transform: translateY(-50%);
+  }
+
+  h1::before {
+    left: -1.5em;
+  }
+
+  h1::after {
+    right: -1.5em;
+  }
+
+  /* 二级标题样式 - 印章风格 (简化版) */
+  h2 {
+    display: block;
+    padding: 0.7em 1em;
+    margin: 2.5em auto 1.8em;
+    color: #f8f4e9;
+    font-size: 1.4em;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 0.1em;
+    position: relative;
+    width: 70%;
+    /* 基础样式 */
+    background: #8b1e22;
+    border: 2px solid #8b1e22;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    /* 印章纹理 - 简化版 */
+    background-image: 
+      radial-gradient(rgba(255,255,255,0.15) 2px, transparent 2px);
+    background-size: 10px 10px;
+  }
+
+  /* 印章边框 */
+  h2::before {
+    content: "";
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    right: 4px;
+    border: 1px solid rgba(255,255,255,0.3);
+    pointer-events: none;
+  }
+
+  /* 印章不规则边缘 */
+  h2::after {
+    content: "";
+    position: absolute;
+    top: -2px;
+    bottom: -2px;
+    left: -2px;
+    right: -2px;
+    background: transparent;
+    border: 2px solid #8b1e22;
+    border-radius: 5px;
+    transform: rotate(-1deg);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* 印章文字装饰 */
+  h2 span {
+    position: relative;
+    /* 文字阴影增强立体感 */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  }
+
+  h3 {
+    padding: 0.5em 1em 0.5em 12px;
+    font-size: 1.2em;
+    line-height: 1.6;
+    border-left: 4px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    margin: 2em 0 0.75em;
+    font-weight: 600;
+    position: relative;
+  }
+
+  /* 标题内容样式 */
+  h3 span {
+    position: relative;
+    display: inline-block;
+    padding-left: 1.5em;
+    /* 文字微妙阴影 */
+    text-shadow: 1px 1px 1px rgba(255,255,255,0.7);
+    color: #8b1e22;
+  }
+
+  /* 标题前装饰 */
+  h3 span::before {
+    content: "「";
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 1em;
+    color: #8b1e22;
+    font-family: "SimSun", serif;
+  }
+
+  h3 span::after {
+    content: "」";
+    margin-left: 0.3em;
+    color: #8b1e22;
+    font-family: "SimSun", serif;
+  }
+
+  /* 四级标题样式 - 毛笔题签风格 */
+  h4 {
+    margin: 1.5em 0 0.8em;
+    color: #333;
+    font-size: 1.1em;
+    font-weight: bold;
+    padding: 0.3em 0 0.3em 1.5em;
+    position: relative;
+    letter-spacing: 0.05em;
+    font-family: "KaiTi", "STKaiti", serif;
+    border-bottom: 1px dashed rgba(139,30,34,0.2);
+  }
+
+  h4::before {
+    content: "✎";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8b1e22;
+    font-size: 1.2em;
+  }
+
+  /* 段落样式 */
+  p {
+    margin: 1em 0;
+    letter-spacing: 0.05em;
+    color: #333;
+    text-align: justify;
+    line-height: 2;
+    text-indent: 2em;
+  }
+
+  /* 引用样式 */
+  blockquote {
+    font-style: normal;
+    padding: 0.5em 1em;
+    border-left: 4px solid #891e22;
+    border-radius: 0;
+    color: #666;
+    background: #f8f8f8;
+    margin: 1.2em 0;
+    border-bottom: none;
+    border-top: none;
+    border-right: none;
+  }
+
+  /* 分割线样式 - 水墨风格 */
+  hr {
+    height: 1px;
+    border: none;
+    margin: 2.5em auto;
+    /* 水墨晕染效果 */
+    background: linear-gradient(
+      to right,
+      rgba(139,30,34,0),
+      rgba(139,30,34,0.5),
+      rgba(139,30,34,0)
+    );
+    width: 80%;
+    position: relative;
+  }
+
+  hr::before {
+    content: "☯";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: #f8f4e9;
+    padding: 0 10px;
+    color: #8b1e22;
+    font-size: 1.2em;
+  }
+
+  /* 粗体样式 */
+  strong {
+    color: #8b1e22;
+    font-weight: bold;
+    font-size: inherit;
+  }
+
+  /* 斜体样式 */
+  em {
+    color: #555;
+    font-style: italic;
+    font-family: "KaiTi", "STKaiti", serif;
+  }
+
+  /* 链接样式 */
+  a {
+    color: #8b1e22;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(139,30,34,0.3);
+    transition: all 0.2s ease;
+  }
+
+  a:hover {
+    color: #d63031;
+    border-bottom: 1px solid #d63031;
+    /* 轻微的水墨效果 */
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      rgba(139,30,34,0.05)
+    );
+  }
+
+  /* 列表样式 */
+  ul {
+    list-style: none;
+    padding-left: 2em;
+    margin: 1em 0;
+  }
+
+  ul li {
+    position: relative;
+    margin: 0.5em 0;
+    line-height: 1.8;
+  }
+
+  ul li::before {
+    content: "•";
+    color: #8b1e22;
+    position: absolute;
+    left: -1.2em;
+    font-size: 1.2em;
+  }
+
+  /* 有序列表 */
+  ol {
+    padding-left: 2em;
+    margin: 1em 0;
+    counter-reset: item;
+  }
+
+  ol li {
+    position: relative;
+    margin: 0.5em 0;
+    line-height: 1.8;
+    list-style: none;
+  }
+
+  ol li::before {
+    content: counter(item) ".";
+    counter-increment: item;
+    color: #8b1e22;
+    position: absolute;
+    left: -1.5em;
+    font-weight: bold;
+  }
+
+  /* 代码块样式 */
+  pre {
+    /* 宣纸效果 */
+    background: linear-gradient(
+      to right,
+      rgba(248,244,233,0.8),
+      rgba(248,244,233,0.9)
+    );
+    border: 1px solid rgba(139,30,34,0.2);
+    border-radius: 0;
+    padding: 1em;
+    margin: 1.5em 0;
+    overflow-x: auto;
+    font-family: "Source Code Pro", monospace;
+    /* 微妙的纹理 */
+    background-image: 
+      repeating-linear-gradient(
+        -45deg,
+        rgba(139,30,34,0.01),
+        rgba(139,30,34,0.01) 1px,
+        transparent 1px,
+        transparent 10px
+      );
+  }
+
+  /* 行内代码样式 */
+  codespan {
+    font-size: 0.9em;
+    color: #8b1e22;
+    background: rgba(139,30,34,0.05);
+    padding: 0.2em 0.4em;
+    border-radius: 0;
+    font-family: "Source Code Pro", monospace;
+    border: 1px solid rgba(139,30,34,0.1);
+  }
+
+  /* 表格样式 */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    border: 1px solid rgba(139,30,34,0.3);
+  }
+
+  th {
+    /* 表头渐变背景 */
+    background: linear-gradient(
+      to bottom,
+      rgba(139,30,34,0.15),
+      rgba(139,30,34,0.05)
+    );
+    padding: 0.8em;
+    text-align: left;
+    font-weight: bold;
+    border-bottom: 2px solid rgba(139,30,34,0.5);
+  }
+
+  td {
+    padding: 0.8em;
+    border-bottom: 1px solid rgba(139,30,34,0.1);
+  }
+
+  tr:nth-child(even) {
+    background: rgba(139,30,34,0.02);
+  }
+
+  /* 图片样式 */
+  img {
+    max-width: 100%;
+    margin: 1.5em auto;
+    display: block;
+    border: 8px solid white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  
+  输出要求：
+  - 只输出 HTML 代码，包裹在 Markdown 代码块中。
+  - 不要包含任何解释文字。

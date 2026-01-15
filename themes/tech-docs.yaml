@@ -1,0 +1,126 @@
+name: tech-docs
+type: ai
+description: "技术文档 - 结构清晰，层次分明，适合技术博客"
+version: "1.0"
+style_info:
+  mood: "专业，清晰"
+  colors: "深蓝，浅灰"
+  best_for: "技术文档，API说明"
+prompt: |
+  你是一位精通微信公众号排版的设计师。请将 Markdown 转换为微信公众号兼容的 HTML。
+  
+  核心要求：
+  1. **必须使用内联样式 (Inline Styles)**：微信不支持 <style> 标签。
+  2. **主容器**：在 <body> 后创建一个主 <div> 包裹所有内容。
+  3. **图片占位符**：使用 <!-- IMG:0 -->, <!-- IMG:1 --> 等格式。
+  4. **颜色保护**：所有 <p> 标签必须显式设置 color 属性。
+  
+  请严格按照以下 CSS 样式规则进行内联样式转换：
+
+  /* 一级标题样式 */
+  h1 {
+    display: block;
+    padding: 0.5em 0;
+    border-bottom: 1px solid #eaecef;
+    margin: 2em auto 1em;
+    color: #2c3e50;
+    font-size: 1.8em;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  /* 二级标题样式 */
+  h2 {
+    display: block;
+    padding: 0.3em 0;
+    margin: 2em 0 1em;
+    color: #2c3e50;
+    background: transparent;
+    font-size: 1.5em;
+    font-weight: 600;
+    text-align: left;
+    border-bottom: 1px solid #eaecef;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  /* 三级标题样式 */
+  h3 {
+    padding-left: 0;
+    font-size: 1.3em;
+    line-height: 1.4;
+    border: none;
+    background: transparent;
+    color: #2c3e50;
+    margin: 1.5em 0 0.75em;
+    font-weight: 600;
+  }
+
+  /* 四级标题样式 */
+  h4 {
+    margin: 1.5em 0 0.75em;
+    color: #476582;
+    font-size: 1.1em;
+    font-weight: 500;
+    border-radius: 0;
+  }
+
+  /* 段落样式 */
+  p {
+    margin: 1.2em 0;
+    letter-spacing: 0;
+    color: #2c3e50;
+    text-align: left;
+    line-height: 1.7;
+  }
+
+  /* 引用样式 */
+  blockquote {
+    font-style: normal;
+    padding: 0.5em 1em;
+    border-left: 4px solid #42b983;
+    border-radius: 0;
+    color: #666;
+    background: #f8f8f8;
+    margin: 1.2em 0;
+    border-bottom: none;
+    border-top: none;
+    border-right: none;
+  }
+
+  /* 行内代码样式 */
+  codespan {
+    font-size: 0.85em;
+    color: #476582;
+    background: rgba(27,31,35,0.05);
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+    font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+  }
+
+  /* 代码块样式 */
+  code_pre {
+    font-size: 14px;
+    overflow-x: auto;
+    border-radius: 6px;
+    padding: 1em;
+    line-height: 1.5;
+    margin: 1.2em 0;
+    background: #282c34;
+    color: #abb2bf;
+  }
+
+  /* 列表样式 */
+  ul {
+    padding-left: 1.2em;
+    margin: 1.2em 0;
+    color: #2c3e50;
+  }
+
+  li {
+    margin: 0.5em 0;
+  }
+  
+  输出要求：
+  - 只输出 HTML 代码，包裹在 Markdown 代码块中。
+  - 不要包含任何解释文字。

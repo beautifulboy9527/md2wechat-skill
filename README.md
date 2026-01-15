@@ -658,16 +658,228 @@ curl -fsSL https://raw.githubusercontent.com/geekjourneyx/md2wechat-skill/main/s
 |------|------|
 | [新手入门指南](QUICKSTART.md) | **强烈推荐！** 详细的图文教程 |
 | [完整使用说明](docs/USAGE.md) | 所有命令和选项 |
+**Mac/Linux：**
+```bash
+curl -fsSL https://raw.githubusercontent.com/geekjourneyx/md2wechat-skill/main/scripts/install.sh | bash
+```
+
+> 💡 脚本会自动检测你的系统架构并下载对应版本
+
+**Windows PowerShell：**
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force
+iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/geekjourneyx/md2wechat-skill/main/scripts/install.ps1'))
+```
+
+### 方式三：从源码编译
+
+```bash
+git clone https://github.com/geekjourneyx/md2wechat-skill.git
+cd md2wechat-skill
+make build
+```
+
+---
+
+## 🤖 Claude Code 集成
+
+md2wechat 提供了 **Claude Code Skill**，让你在 Claude Code 中直接使用自然语言转换文章。
+
+### 安装方式
+
+#### 方式一：Plugin Marketplace（推荐，最简单）
+
+在 Claude Code 中运行以下命令：
+
+```bash
+# 添加插件市场
+/plugin marketplace add geekjourneyx/md2wechat-skill
+
+# 安装插件
+/plugin install md2wechat@geekjourneyx-md2wechat-skill
+```
+
+安装后，直接在 Claude Code 中对话即可使用：
+
+```
+请用秋日暖光主题将 article.md 转换为微信公众号格式
+```
+
+#### 方式二：项目内使用
+
+克隆项目后，Skill 自动可用：
+
+```bash
+git clone https://github.com/geekjourneyx/md2wechat-skill.git
+cd md2wechat-skill
+# 在 Claude Code 中直接使用
+```
+
+#### 方式三：全局安装
+
+将 Skill 复制到全局目录：
+
+```bash
+# 复制到全局技能目录
+cp -r skill/md2wechat ~/.claude/skills/
+```
+
+#### 方式四：创建符号链接
+
+```bash
+ln -s /path/to/md2wechat-skill/skill/md2wechat ~/.claude/skills/md2wechat
+```
+
+### 项目结构
+
+```
+md2wechat-skill/
+├── .claude-plugin/        # 插件清单
+│   └── plugin.json
+├── skill/                 # Claude Code Skill
+│   └── md2wechat/
+│       ├── SKILL.md       # 技能定义
+│       ├── references/    # 参考文档
+│       │   ├── themes.md      # 主题指南
+│       │   ├── html-guide.md  # HTML 规范
+│       │   ├── image-syntax.md # 图片语法
+│       │   └── wechat-api.md  # API 参考
+│       └── scripts/       # 执行脚本
+└── themes/                # AI 主题配置
+    ├── autumn-warm.yaml
+    ├── spring-fresh.yaml
+    └── ocean-calm.yaml
+```
+
+---
+
+## 🎓 使用示例
+
+### 示例 1：技术博主
+
+```bash
+# 写好技术文章
+vim my-tech-post.md
+
+# 使用简洁的 API 模式转换
+md2wechat convert my-tech-post.md --preview
+
+# 满意后发送草稿
+md2wechat convert my-tech-post.md --draft --cover cover.jpg
+```
+
+### 示例 2：产品经理发公告
+
+```bash
+# AI 生成产品公告内容，然后
+md2wechat convert announcement.md --mode ai --theme ocean-calm --draft --cover product-logo.png
+```
+
+### 示例 3：生活方式博主
+
+```bash
+# 使用春日清新主题
+md2wechat travel-diary.md --mode ai --theme spring-fresh --preview
+```
+
+---
+
+## ❓ 常见问题
+
+<details>
+<summary><b>Q: 必须要会编程才能用吗？</b></summary>
+
+**A: 不需要！** 只要会用命令行（终端）就可以。如果是 Windows 用户，下载 .exe 文件后，在 CMD 或 PowerShell 中运行命令即可。
+</details>
+
+<details>
+<summary><b>Q: AI 模式需要付费吗？</b></summary>
+
+**A:** AI 模式使用 Claude 能力：
+- 如果你在 **Claude Code** 中使用，直接调用内置 AI
+- 如果你想自己接入，需要配置 OpenAI 兼容的 API
+</details>
+
+<details>
+<summary><b>Q: 支持哪些 Markdown 语法？</b></summary>
+
+**A:** 支持常用语法：
+- 标题（# ## ###）
+- 列表（无序、有序）
+- 粗体、斜体、行内代码
+- 代码块（带语法高亮）
+- 引用块
+- 分割线
+- 图片、链接
+- 表格
+</details>
+
+<details>
+<summary><b>Q: 生成的文章可以直接在微信编辑器中编辑吗？</b></summary>
+
+**A:** 可以！草稿发送后，你可以登录微信公众平台，在草稿箱中继续编辑。
+</details>
+
+<details>
+<summary><b>Q: 如何知道应该下载哪个版本？下载错了怎么办？</b></summary>
+
+**A:**
+
+**Mac 用户：**
+- 点击屏幕左上角苹果图标 → 「关于本机」
+- 看到 `Apple M1/M2/M3/M4` → 下载 **Apple Silicon (arm64)** 版本
+- 看到 `Intel` → 下载 **Intel (amd64)** 版本
+
+**Linux 用户：**
+- 运行 `uname -m` 命令
+- 输出 `x86_64` → 下载 **amd64** 版本
+- 输出 `aarch64` → 下载 **arm64** 版本
+
+**如果下载错了：**
+- 删除错误的文件，重新下载正确版本即可
+- 也可以使用一键安装脚本，会自动检测系统架构
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/geekjourneyx/md2wechat-skill/main/scripts/install.sh | bash
+```
+</details>
+
+---
+
+## 📚 更多文档
+
+| 文档 | 说明 |
+|------|------|
+| [新手入门指南](QUICKSTART.md) | **强烈推荐！** 详细的图文教程 |
+| [完整使用说明](docs/USAGE.md) | 所有命令和选项 |
 | [常见问题](docs/FAQ.md) | 20+ 常见问题解答 |
 | [故障排查](docs/TROUBLESHOOTING.md) | 遇到问题看这里 |
 
 ---
 
-## 🤝 贡献
+## 🤝 贡献与致谢
+
+本项目 Fork 自 [geekjourneyx/md2wechat-skill](https://github.com/geekjourneyx/md2wechat-skill)，感谢原作者 **geekjourney** 的杰出工作！
+
+在此基础上，我们进行了以下优化和增强：
+
+1.  **新增 ModelScope 图片生成支持**：
+    *   集成了 ModelScope (魔搭社区) 的 `Tongyi-MAI/Z-Image-Turbo` 模型，支持高质量的 AI 图片生成。
+    *   新增 Python 脚本 `generate_image.py` 实现异步图片生成、轮询和自动下载。
+    *   在 Go 核心代码中添加了 ModelScope Provider 支持。
+
+2.  **丰富的主题库**：
+    *   新增了多个精美主题，满足不同场景需求：
+        *   `twilight`: 暮光主题，适合深度阅读
+        *   `minimalist`: 极简主义，大字号高对比度
+        *   `brutalism`: 粗犷风格，高对比度设计
+        *   `chinese-scroll`: 中国传统卷轴风格
+        *   `bytedance`: 字节跳动科技风格
+        *   `tech-docs`: 技术文档风格
+        *   `modern-magazine`: 现代杂志风格
+        *   `cyber`: 赛博朋克风格
 
 欢迎提交 Issue 和 Pull Request！
-
-如果你有好的想法或发现了 bug，请随时提 issue。
 
 ---
 
@@ -677,7 +889,7 @@ curl -fsSL https://raw.githubusercontent.com/geekjourneyx/md2wechat-skill/main/s
 
 ---
 
-## 👨‍💻 作者
+## 👨‍💻 原作者
 
 **geekjourney** — 极客/创作者/AI 探索者
 
@@ -691,8 +903,8 @@ curl -fsSL https://raw.githubusercontent.com/geekjourneyx/md2wechat-skill/main/s
 
 **让公众号写作更简单** ⭐
 
-[主页](https://github.com/geekjourneyx/md2wechat-skill) • [文档](docs) • [反馈](https://github.com/geekjourneyx/md2wechat-skill/issues)
+[主页](https://github.com/beautifulboy9527/md2wechat-skill) • [文档](docs) • [反馈](https://github.com/beautifulboy9527/md2wechat-skill/issues)
 
-Made with ❤️ by [geekjourney](https://geekjourney.dev)
+Made with ❤️ based on [geekjourney](https://geekjourney.dev)'s work
 
 </div>

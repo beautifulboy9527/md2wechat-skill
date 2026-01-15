@@ -60,11 +60,16 @@ func NewProvider(cfg *config.Config) (Provider, error) {
 			return nil, err
 		}
 		return NewOpenAIProvider(cfg)
+	case "modelscope":
+		if err := validateModelScopeConfig(cfg); err != nil {
+			return nil, err
+		}
+		return NewModelScopeProvider(cfg)
 	default:
 		return nil, &config.ConfigError{
 			Field:   "ImageProvider",
 			Message: fmt.Sprintf("未知的图片服务提供者: %s", cfg.ImageProvider),
-			Hint:    "支持的提供者: openai, tuzi",
+			Hint:    "支持的提供者: openai, tuzi, modelscope",
 		}
 	}
 }
@@ -102,6 +107,25 @@ func validateTuZiConfig(cfg *config.Config) error {
 			Field:   "ImageAPIBase",
 			Message: "需要配置 TuZi API Base URL",
 			Hint:    "在配置文件中设置 api.image_base_url，通常为 https://api.tu-zi.com/v1",
+		}
+	}
+	return nil
+}
+
+// validateModelScopeConfig 验证 ModelScope 配置
+func validateModelScopeConfig(cfg *config.Config) error {
+	if cfg.ImageAPIKey == "" {
+		return &config.ConfigError{
+			Field:   "ImageAPIKey",
+			Message: "使用 ModelScope 图片服务需要配置 API Key",
+			Hint:    "在配置文件中设置 api.image_key 或环境变量 IMAGE_API_KEY",
+		}
+	}
+	if cfg.ImageAPIBase == "" {
+		return &config.ConfigError{
+			Field:   "ImageAPIBase",
+			Message: "需要配置 ModelScope API Base URL",
+			Hint:    "在配置文件中设置 api.image_base_url，通常为 https://api-inference.modelscope.cn/",
 		}
 	}
 	return nil
