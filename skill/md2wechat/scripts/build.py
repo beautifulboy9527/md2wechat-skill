@@ -15,6 +15,12 @@ import render_visual
 import append_footer
 import python_converter
 import wechat_uploader
+import slice_image
+# We need to import html_to_image, but it's an async script. 
+# We can run it via subprocess or use asyncio.run inside build.py if we refactor.
+# For simplicity and stability, let's use subprocess for the playwright part as it was designed as a script.
+import subprocess
+
 
 
 
@@ -50,12 +56,13 @@ def load_global_config():
                 return yaml.safe_load(f)
     return {}
 
-def build_article(input_file, output_file=None, upload=False):
+def build_article(input_file, output_file=None, upload=False, mode="text"):
     if not os.path.exists(input_file):
         print(f"Error: File {input_file} not found.")
         return
 
-    print(f"🔨 Building {input_file}...")
+    print(f"🔨 Building {input_file} in [{mode.upper()}] mode...")
+
 
     # 0. Load Global Config
     global_config = load_global_config()
@@ -132,17 +139,20 @@ def build_article(input_file, output_file=None, upload=False):
         print(f"❌ Conversion failed: {e}")
         return
 
-    # 4. Post-processing (Footer)
-
+    # 4. Post-processing (Footer) - Only for text mode or before rendering image
+    # If mode is image, we want footer INSIDE the image, so append it to HTML before rendering.
+    
     footer_config = config.get("footer")
     if footer_config:
-        print("lu Footer...")
-        # We can pass the config dict directly to append_footer if we modify it to accept dict
-        # But append_footer.py currently loads from a file.
-        # Let's just write a temp yaml or modify append_footer.
-        # Actually, append_footer.py imports footer_assets. We can use footer_assets directly here!
+        print("🦶 Appending Footer...")
+        # ... (existing footer logic) ...
+        # We need to read/write the temp HTML file if we are in image mode, 
+        # or the output file if text mode.
         
-        with open(output_file, 'r', encoding='utf-8') as f:
+        # Let's define the html file to work on
+        target_html_file = output_file
+        
+        with open(target_html_file, 'r', encoding='utf-8') as f:
             html_content = f.read()
             
         footer_html = append_footer.footer_assets.get_footer(
@@ -155,10 +165,75 @@ def build_article(input_file, output_file=None, upload=False):
         else:
             new_content = html_content + "\n" + footer_html
             
-        with open(output_file, 'w', encoding='utf-8') as f:
+        with open(target_html_file, 'w', encoding='utf-8') as f:
             f.write(new_content)
 
-    # 5. Upload to WeChat (Optional)
+    # 5. Handle Image/Card Mode
+    final_content_html = "" 
+    
+    if mode == "image":
+        print("📸 Rendering article to Card Images (Section by Section)...")
+        
+        # 1. Split HTML into sections
+        # We need the full HTML first (with footer if configured)
+        # Append footer to the HTML content before splitting? 
+        # Or handle footer as a separate card? 
+        # User wants flexibility. Let's append footer to the main HTML first, then split.
+        # But wait, footer usually goes at the end. If we append it, it will likely be in the last section.
+        
+        # Let's read the current HTML (which might have footer appended from step 4 if we didn't skip it)
+        # Actually step 4 appends to output_file.
+        with open(output_file, 'r', encoding='utf-8') as f:
+            full_html = f.read()
+            
+        sections = python_converter.split_html_by_sections(full_html)
+        print(f"🔪 Split into {len(sections)} cards.")
+        
+        card_images = []
+        script_path = os.path.join(os.path.dirname(__file__), "html_to_image.py")
+        
+        # 2. Render each section
+        for i, section_html in enumerate(sections):
+            print(f"   Rendering Card {i+1}/{len(sections)}...")
+            card_path = f"{os.path.splitext(output_file)[0]}_card_{i}.png"
+            
+            # Write section to temp file for rendering
+            temp_card_html = f"temp_card_{i}.html"
+            with open(temp_card_html, 'w', encoding='utf-8') as f:
+                f.write(section_html)
+                
+            try:
+                # Render
+                subprocess.run(
+                    ["python", script_path, temp_card_html, card_path, "--width", "1080"],
+                    check=True
+                )
+                card_images.append(card_path)
+            except subprocess.CalledProcessError:
+                print(f"❌ Failed to render Card {i}.")
+            finally:
+                if os.path.exists(temp_card_html): os.remove(temp_card_html)
+        
+        # 3. Construct Image-Only HTML
+        img_tags = []
+        for img_path in card_images:
+            rel_path = os.path.relpath(img_path, os.path.dirname(output_file))
+            # Use 100% width and no margin to make them look like a continuous stream
+            img_tags.append(f'<img src="{rel_path}" style="width: 100%; display: block; margin: 0;">')
+            
+        final_content_html = "\n".join(img_tags)
+        
+        # Overwrite output file
+        with open(output_file, 'w', encoding='utf-8') as f:
+            f.write(final_content_html)
+            
+    else:
+        # Text mode
+        with open(output_file, 'r', encoding='utf-8') as f:
+            final_content_html = f.read()
+
+
+    # 6. Upload to WeChat (Optional)
     if upload:
         app_id = config.get("app_id")
         app_secret = config.get("app_secret")
@@ -172,20 +247,15 @@ def build_article(input_file, output_file=None, upload=False):
                 
                 # A. Upload Cover
                 cover_media_id = None
-                if cover_config: # If we generated a cover
-                    cover_path = "cover.jpg" # Assuming default name from step 2
+                if cover_config: 
+                    cover_path = "cover.jpg"
                     if os.path.exists(cover_path):
                         print("📤 Uploading cover image...")
                         cover_media_id, _ = uploader.upload_image(cover_path)
                 
-                # B. Process Content Images
-                # Read the final HTML
-                with open(output_file, 'r', encoding='utf-8') as f:
-                    final_html = f.read()
-                
-                # We need to process the BODY part mainly, but let's process whole HTML
-                # The uploader will replace local src with remote url
-                processed_html = uploader.process_html_images(final_html, os.path.dirname(input_file))
+                # B. Process Content Images (Works for both Text mode and Image mode!)
+                # In Image mode, it will find the slice images and upload them.
+                processed_html = uploader.process_html_images(final_content_html, os.path.dirname(input_file))
                 
                 # C. Upload Draft
                 title = config.get("title", os.path.splitext(os.path.basename(input_file))[0])
@@ -200,12 +270,15 @@ def build_article(input_file, output_file=None, upload=False):
 
     print(f"✅ Build Complete! Output: {output_file}")
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Build WeChat Article from Markdown")
     parser.add_argument("input_file", help="Input Markdown file")
     parser.add_argument("--output", help="Output HTML file")
     parser.add_argument("--upload", action="store_true", help="Upload to WeChat Draft")
+    parser.add_argument("--mode", choices=["text", "image"], default="text", help="Output mode: text (default) or image (full page screenshot)")
     
     args = parser.parse_args()
-    build_article(args.input_file, args.output, args.upload)
+    build_article(args.input_file, args.output, args.upload, args.mode)
+
 

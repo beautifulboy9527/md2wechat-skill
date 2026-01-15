@@ -81,6 +81,14 @@ def get_footer(template_name, context):
     """
     from jinja2 import Template
     
+    # Determine template based on 'type' if present, otherwise use 'template'
+    ftype = context.get("type")
+    if ftype == "ad":
+        template_name = "simple_ad"
+    elif ftype == "qr":
+        template_name = "glass_contact"
+    # else use provided template_name or default
+    
     template_str = FOOTER_TEMPLATES.get(template_name, FOOTER_TEMPLATES["glass_contact"])
     
     # Inject separator if requested
@@ -92,3 +100,4 @@ def get_footer(template_name, context):
         
     template = Template(template_str)
     return template.render(**context)
+

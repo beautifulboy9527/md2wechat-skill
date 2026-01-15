@@ -1,0 +1,14 @@
+# md2wechat-skill 依赖
+# Python 3.8+
+
+# 核心依赖
+markdown>=3.4
+beautifulsoup4>=4.12
+css-inline>=0.14
+PyYAML>=6.0
+Pillow>=10.0
+requests>=2.28
+Jinja2>=3.1
+
+# 浏览器渲染 (HTML 截图)
+playwright>=1.40

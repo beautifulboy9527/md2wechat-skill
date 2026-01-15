@@ -3,6 +3,68 @@ import yaml
 import os
 import css_inline
 from bs4 import BeautifulSoup
+import copy
+
+def split_html_by_sections(html_content):
+    """
+    Splits HTML content into sections based on H1/H2 headers.
+    Returns a list of complete HTML strings (with head/styles) for each section.
+    """
+    soup = BeautifulSoup(html_content, 'html.parser')
+    
+    # Extract head/styles to re-apply to each section
+    head = soup.head
+    if not head:
+        head = soup.new_tag("head")
+    
+    # Find the container
+    container = soup.find("div", class_="wechat-container")
+    if not container:
+        container = soup.body
+        
+    sections = []
+    current_section = []
+    
+    # Helper to finalize a section
+    def finalize_section(nodes):
+        if not nodes:
+            return
+        
+        new_soup = BeautifulSoup("<!DOCTYPE html><html></html>", 'html.parser')
+        new_soup.html.append(copy.copy(head))
+        new_body = new_soup.new_tag("body")
+        new_container = new_soup.new_tag("div", attrs={"class": "wechat-container"})
+        
+        # Apply body styles to container if needed, or just rely on CSS
+        # In our converter, we put styles in <head>, so just structure is enough.
+        
+        for node in nodes:
+            new_container.append(node)
+            
+        new_body.append(new_container)
+        new_soup.html.append(new_body)
+        sections.append(str(new_soup))
+
+    # Iterate through children
+    for child in container.children:
+        if child.name in ['h1', 'h2']:
+            # If we have accumulated content, save it as a section
+            if current_section:
+                finalize_section(current_section)
+                current_section = []
+            # Start new section with this header
+            current_section.append(copy.copy(child))
+        else:
+            # Append to current section
+            if child.name or (isinstance(child, str) and child.strip()):
+                 current_section.append(copy.copy(child))
+                 
+    # Final section
+    if current_section:
+        finalize_section(current_section)
+        
+    return sections
+
 
 def load_theme(theme_name, themes_dir):
     # Try .yaml and .yml
