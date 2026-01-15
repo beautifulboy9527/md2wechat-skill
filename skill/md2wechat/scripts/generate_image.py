@@ -15,7 +15,11 @@ except ImportError:
     style_prompts = None
 
 
-def generate_image(prompt, binary_path, style=None, sub_style=None, size="1280x720"):
+def generate_image_file(prompt, output_path, style=None, sub_style=None, size="1280*720"):
+    """
+    Generates an image using ModelScope API and saves it to output_path.
+    Returns (output_path, image_url) on success.
+    """
     # Enhance prompt with style if provided
     if style and style_prompts:
         suffix = style_prompts.get_style_prompt(style, sub_style)
@@ -49,8 +53,7 @@ def generate_image(prompt, binary_path, style=None, sub_style=None, size="1280x7
                 break
     
     if not api_key:
-        print(json.dumps({"success": False, "error": "IMAGE_API_KEY environment variable is not set and could not be found in config file"}))
-        sys.exit(1)
+        raise Exception("IMAGE_API_KEY environment variable is not set and could not be found in config file")
 
     common_headers = {
         "Authorization": f"Bearer {api_key}",
@@ -59,6 +62,7 @@ def generate_image(prompt, binary_path, style=None, sub_style=None, size="1280x7
 
     # 1. Generate Image
     try:
+        # Note: ModelScope expects size as "Width*Height" (e.g. "1024*1024"), not "x".
         response = requests.post(
             f"{base_url}v1/images/generations",
             headers={**common_headers, "X-ModelScope-Async-Mode": "true"},
@@ -74,8 +78,7 @@ def generate_image(prompt, binary_path, style=None, sub_style=None, size="1280x7
         if not task_id:
              raise Exception("No task_id returned")
     except Exception as e:
-        print(json.dumps({"success": False, "error": f"Failed to start generation: {str(e)}"}))
-        sys.exit(1)
+        raise Exception(f"Failed to start generation: {str(e)}")
 
     # 2. Poll for result
     image_url = None
@@ -93,31 +96,35 @@ def generate_image(prompt, binary_path, style=None, sub_style=None, size="1280x7
                     image_url = data["output_images"][0]
                     break
             elif data["task_status"] == "FAILED":
-                print(json.dumps({"success": False, "error": f"Generation failed: {data.get('message', 'Unknown error')}"}))
-                sys.exit(1)
+                raise Exception(f"Generation failed: {data.get('message', 'Unknown error')}")
         except Exception as e:
-             print(json.dumps({"success": False, "error": f"Polling error: {str(e)}"}))
-             sys.exit(1)
+             raise Exception(f"Polling error: {str(e)}")
         
         time.sleep(2)
     
     if not image_url:
-        print(json.dumps({"success": False, "error": "Generation timed out"}))
-        sys.exit(1)
+        raise Exception("Generation timed out")
 
     # 3. Download Image
-    temp_file = f"temp_{int(time.time())}.jpg"
     try:
         img_resp = requests.get(image_url)
         img_resp.raise_for_status()
         image = Image.open(BytesIO(img_resp.content))
-        image.save(temp_file)
+        image.save(output_path)
+        return output_path, image_url
     except Exception as e:
-        print(json.dumps({"success": False, "error": f"Failed to download/save image: {str(e)}"}))
-        sys.exit(1)
+        raise Exception(f"Failed to download/save image: {str(e)}")
 
-    # 4. Upload using binary
+
+def generate_image_and_upload(prompt, binary_path, style=None, sub_style=None, size="1280*720"):
+    """
+    CLI wrapper: Generates image and uploads it using the binary.
+    """
+    temp_file = f"temp_{int(time.time())}.jpg"
     try:
+        _, image_url = generate_image_file(prompt, temp_file, style, sub_style, size)
+        
+        # 4. Upload using binary
         # We need to capture stdout
         # Ensure binary_path is absolute or correct relative
         cmd = [binary_path, "upload_image", temp_file]
@@ -156,7 +163,6 @@ if __name__ == "__main__":
     output_path = sys.argv[2]
     style = sys.argv[3] if len(sys.argv) > 3 and sys.argv[3] != "None" else None
     sub_style = sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] != "None" else None
-    size = sys.argv[5] if len(sys.argv) > 5 else "1280x720" # Default to 16:9 for WeChat
+    size = sys.argv[5] if len(sys.argv) > 5 else "1280*720" # Default to 16:9 for WeChat
 
-    generate_image(prompt, output_path, style, sub_style, size)
-
+    generate_image_and_upload(prompt, output_path, style, sub_style, size)

@@ -31,6 +31,18 @@ async def html_to_image(input_path, output_path, width=1000, height=None, select
                 return False
         else:
             # Full page screenshot
+            # Fix: Resize viewport to match content height to eliminate excess whitespace.
+            # 1. Force html/body to auto height to prevent them from filling the default viewport.
+            await page.add_style_tag(content="html, body { height: auto !important; min-height: 0 !important; }")
+            
+            # 2. Get the height of the body element (which wraps our content)
+            # We use scrollHeight of body, which should include all content + padding.
+            body_height = await page.evaluate("document.body.scrollHeight")
+            
+            if body_height > 0:
+                # Set viewport to match body height exactly
+                await page.set_viewport_size({"width": width, "height": int(body_height)})
+            
             await page.screenshot(path=output_path, full_page=True)
 
         await browser.close()

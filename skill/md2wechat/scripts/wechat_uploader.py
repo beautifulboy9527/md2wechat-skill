@@ -2,6 +2,7 @@ import requests
 import json
 import os
 import re
+import time
 from bs4 import BeautifulSoup
 
 class WeChatUploader:
@@ -44,14 +45,55 @@ class WeChatUploader:
     def process_html_images(self, html_content, base_dir="."):
         """
         Finds local images in HTML, uploads them to WeChat, and replaces src with WeChat URL.
+        Also handles AI generation syntax: src="__generate:prompt"
         Returns processed HTML.
         """
+        # Lazy import to avoid circular dependency if any, and ensure path is correct
+        try:
+            import sys
+            sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+            from generate_image import generate_image_file
+        except ImportError:
+            generate_image_file = None
+            print("⚠️ Warning: generate_image module not found. AI generation will be skipped.")
+
         soup = BeautifulSoup(html_content, 'html.parser')
         images = soup.find_all('img')
         
         for img in images:
             src = img.get('src')
-            if src and not src.startswith('http'):
+            if not src:
+                continue
+
+            if src.startswith('__generate:'):
+                # AI Generation
+                if not generate_image_file:
+                    print(f"⚠️ Skipping AI generation for {src}: Module not available")
+                    continue
+                
+                prompt = src[len('__generate:'):]
+                print(f"🎨 Generating AI image for prompt: {prompt}...")
+                
+                temp_file = f"temp_gen_{int(time.time())}_{hash(prompt)}.jpg"
+                try:
+                    # Generate local file
+                    local_path, _ = generate_image_file(prompt, temp_file)
+                    
+                    # Upload to WeChat
+                    print(f"📤 Uploading generated image...")
+                    media_id, wechat_url = self.upload_image(local_path)
+                    img['src'] = wechat_url
+                    
+                    # Cleanup
+                    if os.path.exists(local_path):
+                        os.remove(local_path)
+                        
+                except Exception as e:
+                    print(f"⚠️ Failed to generate/upload AI image: {e}")
+                    # Keep placeholder or maybe set to a broken image indicator?
+                    # For now, keep as is so user sees the error in src
+            
+            elif not src.startswith('http'):
                 # Local file
                 local_path = os.path.join(base_dir, src)
                 print(f"📤 Uploading image: {local_path}...")
