@@ -1,6 +1,6 @@
 ---
 name: md2wechat
-description: Convert Markdown articles to WeChat Official Account formatted HTML with styled CSS and optionally upload to draft box. Supports API mode for quick conversion and AI mode for beautiful themed layouts (autumn-warm, spring-fresh, ocean-calm). Use when user wants to convert markdown to WeChat article, publish to WeChat, or format articles for WeChat Official Account.
+description: Converts Markdown articles to WeChat Official Account formatted HTML with styled CSS and optionally uploads to draft box. Supports API mode for quick conversion and AI mode for beautiful themed layouts (autumn-warm, spring-fresh, ocean-calm). Use when user wants to convert markdown to WeChat article, publish to WeChat, or format articles for WeChat Official Account.
 ---
 
 # MD to WeChat
@@ -10,7 +10,16 @@ Converts Markdown articles to WeChat Official Account formatted HTML with inline
 - **API Mode**: Fast conversion using md2wechat.cn API
 - **AI Mode**: Beautiful themed layouts powered by Claude AI
 
-## Quick Start
+## When to use this skill
+
+- Use this when the user wants to convert a Markdown file to a WeChat Official Account compatible HTML format.
+- Use this when the user wants to publish or upload an article to WeChat Draft Box.
+- Use this when the user wants to generate AI images for their article or standalone usage.
+- Use this when the user mentions "WeChat", "Official Account", "gongzhonghao", or "article formatting".
+
+## How to use it
+
+### Quick Start
 
 ```bash
 # Preview HTML (API mode, fast)
@@ -52,7 +61,7 @@ I will:
 1. Call the image generation command directly
 2. Return the generated image URL and WeChat material ID
 
-## Workflow Checklist
+### Workflow Checklist
 
 Copy this checklist to track progress:
 
@@ -68,7 +77,7 @@ Progress:
 
 ---
 
-## Step 1: Analyze Markdown
+### Step 1: Analyze Markdown
 
 Read the markdown file and extract:
 
@@ -90,16 +99,16 @@ Read the markdown file and extract:
 
 ---
 
-## Step 2: Confirm Mode and Theme
+### Step 2: Confirm Mode and Theme
 
-### Conversion Mode
+#### Conversion Mode
 
 | Mode | Speed | Style | Best For |
 |------|-------|-------|----------|
 | **API** | Fast (seconds) | Clean, standard | Quick publishing, technical content |
 | **AI** | Slower (10-30s) | Beautiful themed | Important articles, brand content |
 
-### AI Themes
+#### AI Themes
 
 | Theme | Description | Best For |
 |-------|-------------|----------|
@@ -108,7 +117,7 @@ Read the markdown file and extract:
 | **ocean-calm** | Calm blue tones, professional, rational | Tech articles, business analysis |
 | **custom** | Use custom prompt | Brand customization |
 
-### API Themes (Fast)
+#### API Themes (Fast)
 
 | Theme | Description | Best For |
 |-------|-------------|----------|
@@ -130,9 +139,9 @@ Read detailed style prompts from [references/themes.md](references/themes.md)
 
 ---
 
-## Step 3: Generate HTML
+### Step 3: Generate HTML
 
-### API Mode
+#### API Mode
 
 Call md2wechat CLI:
 
@@ -140,7 +149,7 @@ Call md2wechat CLI:
 bash skill/md2wechat/scripts/run.sh convert article.md --mode api
 ```
 
-### AI Mode
+#### AI Mode
 
 Read the selected style prompt from `references/themes.md` and generate HTML with **inline CSS**.
 
@@ -171,13 +180,13 @@ Read the selected style prompt from `references/themes.md` and generate HTML wit
 
 ---
 
-## Step 4: Process Images
+### Step 4: Process Images
 
-### Image Generation Methods
+#### Image Generation Methods
 
 There are **three ways** to generate AI images:
 
-#### Method 1: Natural Language - For Article (Recommended)
+**Method 1: Natural Language - For Article (Recommended)**
 
 Simply describe what you want in plain language:
 
@@ -197,20 +206,7 @@ User: "Create an image showing the workflow diagram in article.md"
 4. **Confirm with user** - Show the prompt I created and ask for approval
 5. **Generate and upload** - Call the conversion command to complete
 
-**Example conversation:**
-
-```
-User: "Add a product image at the start of my article"
-Claude: "I'll add a product concept image at the beginning of article.md.
-Based on your article about 'Smart Home Hub', I'll use this prompt:
-'A modern smart home hub device, sleek white design with LED indicator
-lights, minimalist product photography on a clean white background'
-Should I proceed?"
-User: "Yes"
-Claude: [Inserts the syntax and runs conversion]
-```
-
-#### Method 2: Natural Language - Standalone Image
+**Method 2: Natural Language - Standalone Image**
 
 Generate an image without any article:
 
@@ -227,7 +223,7 @@ User: "Make a diagram showing user signup flow"
 
 **Use when:** You just need an image, not for any article.
 
-#### Method 3: Manual Syntax
+**Method 3: Manual Syntax**
 
 Write the image generation syntax directly in Markdown:
 
@@ -239,11 +235,11 @@ Write the image generation syntax directly in Markdown:
 
 ---
 
-### Processing Images by Type
+#### Processing Images by Type
 
 For each image reference in order:
 
-#### Local Image
+**Local Image**
 
 ```bash
 bash skill/md2wechat/scripts/run.sh upload_image "/path/to/image.png"
@@ -254,13 +250,13 @@ Response:
 {"success": true, "wechat_url": "https://mmbiz.qpic.cn/...", "media_id": "xxx"}
 ```
 
-#### Online Image
+**Online Image**
 
 ```bash
 bash skill/md2wechat/scripts/run.sh download_and_upload "https://example.com/image.png"
 ```
 
-#### AI Generated Image (via CLI)
+**AI Generated Image (via CLI)**
 
 ```bash
 bash skill/md2wechat/scripts/run.sh generate_image "A cute cat sitting on a windowsill"
@@ -279,7 +275,7 @@ bash skill/md2wechat/scripts/run.sh generate_image "A cute cat sitting on a wind
 
 ---
 
-## Step 5: Replace Image URLs
+### Step 5: Replace Image URLs
 
 Replace placeholders in HTML:
 
@@ -297,18 +293,18 @@ Use the WeChat URLs returned from image processing.
 
 ---
 
-## Step 6: Preview or Upload
+### Step 6: Preview or Upload
 
 Ask user:
 
 1. **Preview only** - Show HTML for review
 2. **Upload to draft** - Create WeChat draft article
 
-### Preview Mode
+#### Preview Mode
 
 Display HTML in markdown code block for user to copy.
 
-### Upload Mode
+#### Upload Mode
 
 Create draft and run:
 
@@ -379,245 +375,12 @@ Response:
 
 ---
 
-## Complete Examples
-
-### Example 1: Simple Article (No Images)
-
-**Input**: `simple.md`
-```markdown
-# My First Article
-
-This is a simple article with no images.
-```
-
-**Process**:
-1. Generate HTML with API mode
-2. Skip image processing
-3. Ask: preview or upload?
-4. If upload → create draft
-
-### Example 2: Article with Local Images
-
-**Input**: `with-images.md`
-```markdown
-# Travel Diary
-
-Day 1 in Paris:
-
-![Eiffel Tower](./photos/eiffel.jpg)
-```
-
-**Process**:
-1. Analyze: 1 local image
-2. Generate HTML with `<!-- IMG:0 -->` placeholder
-3. Run: `upload_image "./photos/eiffel.jpg"`
-4. Replace placeholder with WeChat URL
-5. Preview or upload
-
-### Example 3: AI Mode with Theme
-
-**Input**: `story.md`
-```markdown
-# The Old Library
-
-A story about memories...
-```
-
-**Process**:
-1. User selects AI mode + autumn-warm theme
-2. Read theme prompt from references/themes.md
-3. Generate themed HTML with inline CSS
-4. Preview or upload
-
-### Example 4: AI Image Generation via Natural Language
-
-**User Request:**
-```
-"Help me add a product concept image at the beginning of article.md"
-```
-
-**Process:**
-1. Read article.md to understand the product
-2. Create an appropriate image prompt based on context
-3. Confirm with user: "I'll use this prompt: '...'"
-4. Insert `![Product Concept](__generate:...)` at line 2
-5. Run conversion command to generate and upload
-
-**Result:** Image generated and uploaded to WeChat
-
----
-
-### Example 5: Article with Pre-written Image Syntax
-
-**Input**: `mixed.md`
-```markdown
-# Tech Review
-
-![Product Photo](./product.jpg)
-
-![Comparison Chart](https://example.com/chart.png)
-
-![Concept Art](__generate:Futuristic gadget design__)
-```
-
-**Process:**
-1. Process 3 images in order
-2. Each returns WeChat URL
-3. Replace all placeholders
-4. Final HTML with all WeChat-hosted images
-
----
-
 ## References
 
 - [Style Themes](references/themes.md) - Detailed style prompts for AI themes
 - [HTML Guide](references/html-guide.md) - WeChat HTML constraints and best practices
 - [Image Syntax](references/image-syntax.md) - Image reference syntax
 - [WeChat API](references/wechat-api.md) - API reference
-
----
-
-## Troubleshooting
-
-### Configuration Issues
-
-**Q: "AppID not configured" error**
-A: Set `WECHAT_APPID` and `WECHAT_SECRET` environment variables, or run:
-```bash
-md2wechat config init
-```
-
-**Q: Config file not working**
-A: Check config file location. Supported locations:
-- `./md2wechat.yaml` (current directory, highest priority)
-- `~/.md2wechat.yaml`
-- `~/.config/md2wechat/config.yaml`
-
-### Image Issues
-
-**Q: Image upload fails with "invalid filetype"**
-A: WeChat supports JPG, PNG, GIF. Ensure image is in correct format:
-```bash
-# Convert using ImageMagick
-convert input.tiff output.jpg
-```
-
-**Q: Images not showing in draft**
-A: Images must use WeChat-hosted URLs (`mmbiz.qpic.cn`), not external URLs.
-
-**Q: AI image generation fails**
-A: Check `IMAGE_API_KEY` is set and API base URL is correct.
-
-### WeChat API Issues
-
-**Q: "IP not in whitelist" error**
-A: Add your server IP to WeChat whitelist:
-
-1. Get your public IP:
-```bash
-curl ifconfig.me
-# or
-curl ip.sb
-```
-
-2. Add IP to WeChat:
-   - Visit [WeChat Developer Platform](https://developers.weixin.qq.com/platform)
-   - Go to **Settings & Development** → **Basic Configuration**
-   - Find **IP Whitelist** section
-   - Click "Set" and add your IP
-   - Wait a few minutes for changes to take effect
-
-**Q: "access_token expired" error**
-A: Program auto-refreshes tokens. If persists:
-```bash
-# Check config
-md2wechat config show
-
-# Re-init if needed
-md2wechat config init
-```
-
-**Q: "create draft failed" error**
-A: Possible causes:
-1. Insufficient permissions - ensure account is verified
-2. Sensitive content - check article content
-3. Draft limit reached - check existing drafts
-
-**Q: API rate limit exceeded**
-A: WeChat has API limits. Wait and retry:
-```bash
-# Wait 60 seconds
-sleep 60
-# Retry
-md2wechat convert article.md --draft
-```
-
-### HTML/Style Issues
-
-**Q: Styles not working in WeChat editor**
-A: Check:
-1. CSS uses inline `style` attributes (not `<style>` tags)
-2. CSS properties are in allowed list (see HTML Guide)
-3. No syntax errors (unclosed tags, etc.)
-
-**Q: Background color lost in WeChat**
-A: WeChat strips `<body>` styles. Use main container:
-```html
-<div style="background-color: #faf9f5; padding: 40px 10px;">
-  <!-- All content here -->
-</div>
-```
-
-**Q: Text color not as expected**
-A: WeChat resets `<p>` color to black. Always specify:
-```html
-<p style="color: #4a413d;">Your text here</p>
-```
-
-### Command Issues
-
-**Q: "command not found: md2wechat"**
-A: Binary not in PATH. Use full path or add to PATH:
-```bash
-# Use full path
-./bin/md2wechat-linux-amd64 --help
-
-# Or add to PATH
-export PATH=$PATH:/path/to/md2wechat/bin
-```
-
-**Q: AI mode very slow**
-A: AI mode requires Claude API call and takes 10-30 seconds. For faster results, use API mode.
-
----
-
-## CLI Commands Reference
-
-```bash
-# Show help
-md2wechat --help
-
-# Convert and preview
-md2wechat convert article.md --preview
-
-# Convert with AI theme
-md2wechat convert article.md --mode ai --theme autumn-warm --preview
-
-# Convert and upload to draft
-md2wechat convert article.md --draft --cover cover.jpg
-
-# Upload single image
-md2wechat upload_image photo.jpg
-
-# Download and upload online image
-md2wechat download_and_upload https://example.com/image.jpg
-
-# Generate AI image (requires IMAGE_API_KEY)
-md2wechat generate_image "A cute cat sitting on a windowsill"
-
-# Initialize config
-md2wechat config init
-
-# Show config
-md2wechat config show
-```
+- [Complete Examples](references/examples.md) - Usage examples
+- [Troubleshooting](references/troubleshooting.md) - Common issues and solutions
+- [CLI Reference](references/cli.md) - Command line interface reference
