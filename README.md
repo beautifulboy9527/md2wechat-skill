@@ -891,6 +891,15 @@ curl -fsSL https://raw.githubusercontent.com/geekjourneyx/md2wechat-skill/main/s
 
 ---
 
+## 👨‍💻 维护者 (Current Maintainer)
+
+**一辉**
+
+- 🐦 X/Twitter: [@neo1_95](https://x.com/neo1_95)
+- 💻 GitHub: [beautifulboy9527](https://github.com/beautifulboy9527)
+
+---
+
 ## 👨‍💻 原作者
 
 **geekjourney** — 极客/创作者/AI 探索者
