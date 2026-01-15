@@ -5,11 +5,12 @@ import css_inline
 from bs4 import BeautifulSoup
 import copy
 
-def split_html_by_sections(html_content):
+def split_html_by_sections(html_content, card_mode=False):
     """
     Splits HTML content into sections based on H1/H2 headers.
     Returns a list of complete HTML strings (with head/styles) for each section.
     """
+
     soup = BeautifulSoup(html_content, 'html.parser')
     
     # Extract head/styles to re-apply to each section
@@ -32,8 +33,22 @@ def split_html_by_sections(html_content):
         
         new_soup = BeautifulSoup("<!DOCTYPE html><html></html>", 'html.parser')
         new_soup.html.append(copy.copy(head))
-        new_body = new_soup.new_tag("body")
-        new_container = new_soup.new_tag("div", attrs={"class": "wechat-container"})
+        
+        if card_mode:
+            # Card Mode: Gray background, centered white card with shadow
+            new_body = new_soup.new_tag("body", attrs={"style": "margin: 0; padding: 20px; background-color: #f0f2f5;"})
+            new_container = new_soup.new_tag("div", attrs={
+                "class": "wechat-container",
+                "style": "width: 85%; max-width: 800px; margin: 20px auto; background: #fff; padding: 50px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 17px; line-height: 1.8; color: #333;"
+            })
+        else:
+            # Normal Mode: White background, full width
+            new_body = new_soup.new_tag("body", attrs={"style": "margin: 0; padding: 0; background-color: #fff;"})
+            new_container = new_soup.new_tag("div", attrs={
+                "class": "wechat-container",
+                "style": "padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 17px; line-height: 1.6; color: #333;"
+            })
+
         
         # Apply body styles to container if needed, or just rely on CSS
         # In our converter, we put styles in <head>, so just structure is enough.

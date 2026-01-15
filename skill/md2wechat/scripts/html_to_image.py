@@ -7,7 +7,7 @@ from playwright.async_api import async_playwright
 async def html_to_image(input_path, output_path, width=1000, height=None, selector=None):
     async with async_playwright() as p:
         browser = await p.chromium.launch()
-        page = await browser.new_page(viewport={'width': width, 'height': height or 800})
+        page = await browser.new_page(viewport={'width': width, 'height': height or 800}, device_scale_factor=3)
         
         # Handle local file or raw HTML string
         if os.path.exists(input_path):

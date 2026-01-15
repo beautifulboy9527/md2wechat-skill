@@ -186,7 +186,7 @@ def build_article(input_file, output_file=None, upload=False, mode="text"):
         with open(output_file, 'r', encoding='utf-8') as f:
             full_html = f.read()
             
-        sections = python_converter.split_html_by_sections(full_html)
+        sections = python_converter.split_html_by_sections(full_html, card_mode=True)
         print(f"🔪 Split into {len(sections)} cards.")
         
         card_images = []

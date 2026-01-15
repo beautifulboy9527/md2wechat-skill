@@ -6,8 +6,26 @@
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue?logo=python)](https://python.org)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Original Author](https://img.shields.io/badge/Original-geekjourney-orange)](https://github.com/geekjourney)
+
+[快速开始](#-30-秒快速开始) • [功能介绍](#-功能一览) • [使用指南](#-使用指南) • [进阶配置](#-进阶配置)
+
+---
 
 </div>
+
+## ✨ 这是什么？
+
+**md2wechat** 是一个全流程的公众号自动化写作助手。它不仅仅是排版工具，更能帮你搞定配图、页脚甚至自动上传。
+
+> 💡 **一句话理解**：Markdown 写作 → AI 自动配图 → 智能排版 → 自动发到微信草稿箱
+
+**核心亮点：**
+*   🎨 **智能排版**：支持卷轴、科技、极简等多种风格，自动适配 CSS。
+*   🖼️ **AI 配图**：集成 ModelScope，根据文章内容自动生成封面和插图。
+*   📸 **卡片模式**：**独家功能**！自动将文章按章节切分为高清卡片图片，完美还原设计稿，不受微信编辑器限制。
+*   🦶 **动态页脚**：一键注入动态 SVG 分隔符、二维码和往期推荐。
+*   🚀 **自动发布**：直接上传图片和草稿到微信公众号后台。
 
 ---
 
@@ -82,16 +100,22 @@ footer:
 python skill/md2wechat/scripts/build.py my_article.md --upload
 ```
 
-### 方式三：卡片长图模式
-适合制作精美的海报式文章：
+### 方式三：卡片长图模式 (Card Mode)
+适合制作精美的海报式文章，或者当你想完全掌控排版细节时。
+脚本会自动将文章按章节（H1/H2）切分为多张 **1080px 宽的高清卡片**，并自动拼接。
+
 ```bash
 python skill/md2wechat/scripts/build.py my_article.md --mode image --upload
 ```
-这会将文章按章节切分，每个章节渲染为一张高清图片。
+
+**效果特点：**
+*   ✅ **高清无损**：3倍超采样渲染，文字锐利清晰。
+*   ✅ **卡片设计**：自动添加圆角、阴影和舒适的边距，像精心设计的 PPT。
+*   ✅ **完美还原**：彻底解决微信编辑器“吃样式”的问题。
 
 ---
 
-## ⚙️ 配置说明
+## ⚙️ 进阶配置
 
 ### 全局配置 (`md2wechat.yaml`)
 运行 `python setup.py` 会自动生成，也可手动编辑：
@@ -149,23 +173,10 @@ A: 确保 `theme` 名称正确（如 `twilight`, `chinese-scroll`, `brutalism`�
 
 ---
 
-## 📂 目录结构
+## 🙏 致谢
 
-```
-md2wechat-skill/
-├── setup.py                 # 配置向导 (小白入口)
-├── requirements.txt         # 依赖清单
-├── md2wechat.yaml           # 全局配置 (自动生成)
-├── themes/                  # 主题样式
-│   ├── twilight.yaml
-│   ├── chinese-scroll.yaml
-│   └── brutalism.yaml
-└── skill/md2wechat/scripts/ # 核心脚本
-    ├── build.py             # 主程序 ⭐
-    ├── python_converter.py  # Markdown 转 HTML
-    ├── html_to_image.py     # HTML 截图
-    └── ...
-```
+本项目基于 [geekjourney/md2wechat-skill](https://github.com/geekjourney) 开发，感谢原作者的开源贡献。
+我们在原版基础上进行了 Python 重构，并增加了 AI 生图、卡片模式和自动上传等新功能。
 
 ---
 
