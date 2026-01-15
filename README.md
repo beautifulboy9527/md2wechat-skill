@@ -861,6 +861,8 @@ curl -fsSL https://raw.githubusercontent.com/geekjourneyx/md2wechat-skill/main/s
 
 本项目 Fork 自 [geekjourneyx/md2wechat-skill](https://github.com/geekjourneyx/md2wechat-skill)，感谢原作者 **geekjourney** 的杰出工作！
 
+同时感谢 [notebooklm-py](https://github.com/teng-lin/notebooklm-py) 的作者 **Teng Lin**，为本项目提供了强大的工具支持。
+
 在此基础上，我们进行了以下优化和增强：
 
 1.  **新增 ModelScope 图片生成支持**：
