@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1000, initial-scale=1.0">
+    <title>md2wechat Update</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --primary-blue: #007AFF;
+            --primary-purple: #5856D6;
+            --primary-cyan: #5AC8FA;
+        }
+
+        body {
+            background-color: #F2F2F7;
+            font-family: 'SF Pro Display', 'Inter', 'Noto Sans SC', sans-serif;
+            margin: 0;
+            padding: 40px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 122, 255, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(88, 86, 214, 0.1) 0%, transparent 40%);
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 220px);
+            gap: 24px;
+            width: 1000px;
+            max-width: 1000px;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 32px;
+            box-shadow: var(--glass-shadow);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.4) 40%, transparent 60%);
+            z-index: 1;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 16px 48px rgba(31, 38, 135, 0.2);
+        }
+
+        .card-main {
+            grid-column: span 2;
+            grid-row: span 2;
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        .card-theme {
+            grid-column: span 1;
+            grid-row: span 1;
+        }
+
+        .card-ai {
+            grid-column: span 1;
+            grid-row: span 2;
+            background: linear-gradient(135deg, rgba(88, 86, 214, 0.1), rgba(90, 200, 250, 0.1));
+        }
+
+        .card-github {
+            grid-column: span 1;
+            grid-row: span 1;
+        }
+
+        .card-maintainer {
+            grid-column: span 2;
+            grid-row: span 1;
+        }
+
+        .card-qr {
+            grid-column: span 1;
+            grid-row: span 1;
+            padding: 0;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #1D1D1F;
+            margin-bottom: 16px;
+            line-height: 1.1;
+            text-shadow: 0 2px 10px rgba(255,255,255,0.5);
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1D1D1F;
+            margin-bottom: 12px;
+            letter-spacing: -0.01em;
+        }
+
+        p {
+            font-size: 17px;
+            line-height: 1.6;
+            color: #1D1D1F;
+            font-weight: 500;
+            opacity: 0.85;
+        }
+
+        .icon-bg {
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            font-size: 140px;
+            opacity: 0.08;
+            color: var(--primary-blue);
+            transform: rotate(-15deg);
+            z-index: 0;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 6px 12px;
+            background: rgba(0, 122, 255, 0.1);
+            color: #007AFF;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 15px;
+            color: #1D1D1F;
+        }
+
+        .feature-list i {
+            margin-right: 10px;
+            color: var(--primary-blue);
+            font-size: 14px;
+        }
+
+        .qr-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .qr-image {
+            width: 140px;
+            height: 140px;
+            border-radius: 12px;
+            mix-blend-mode: multiply;
+        }
+
+        .qr-text {
+            margin-top: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #8E8E93;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #007AFF, #5856D6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bento-grid">
+        <!-- Main Card: Core Concept -->
+        <div class="glass-card card-main">
+            <span class="tag">Major Update v2.0</span>
+            <h1>md2wechat<br><span class="gradient-text">排版神器</span></h1>
+            <p style="font-size: 20px; max-width: 90%;">让你的公众号写作效率提升 10 倍。告别繁琐排版，专注于内容创作。</p>
+            <div style="margin-top: auto;">
+                <div style="display: flex; gap: 12px;">
+                    <span style="background:rgba(255,255,255,0.5); padding:8px 16px; border-radius:12px; font-weight:600; font-size:14px;">Markdown</span>
+                    <span style="background:rgba(255,255,255,0.5); padding:8px 16px; border-radius:12px; font-weight:600; font-size:14px;">WeChat</span>
+                    <span style="background:rgba(255,255,255,0.5); padding:8px 16px; border-radius:12px; font-weight:600; font-size:14px;">AI Powered</span>
+                </div>
+            </div>
+            <i class="fa-solid fa-wand-magic-sparkles icon-bg floating"></i>
+        </div>
+
+        <!-- Sub Card 1: Themes -->
+        <div class="glass-card card-theme">
+            <i class="fa-solid fa-palette" style="font-size: 32px; color: #5856D6; margin-bottom: 16px;"></i>
+            <h2>8 款精美主题</h2>
+            <p style="font-size: 14px; opacity: 0.7;">Twilight, Minimalist, Cyber, Chinese Scroll...</p>
+            <i class="fa-solid fa-swatchbook icon-bg" style="font-size: 80px; opacity: 0.05;"></i>
+        </div>
+
+        <!-- Sub Card 2: AI Image -->
+        <div class="glass-card card-ai">
+            <span class="tag" style="background: rgba(90, 200, 250, 0.15); color: #007AFF;">ModelScope</span>
+            <h2>AI 绘图集成</h2>
+            <p>Tongyi-MAI / Z-Image-Turbo</p>
+            <ul class="feature-list" style="margin-top: 20px;">
+                <li><i class="fa-solid fa-bolt"></i> 秒级极速出图</li>
+                <li><i class="fa-solid fa-image"></i> 完美匹配意境</li>
+                <li><i class="fa-solid fa-check-circle"></i> 免费开源生态</li>
+            </ul>
+            <div style="margin-top: auto; height: 100px; background: rgba(255,255,255,0.3); border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                <span style="font-size: 12px; color: #8E8E93;">AI Generated Preview</span>
+            </div>
+        </div>
+
+        <!-- Sub Card 3: GitHub -->
+        <div class="glass-card card-github">
+            <i class="fa-brands fa-github" style="font-size: 36px; color: #1D1D1F; margin-bottom: 16px;"></i>
+            <h2>开源免费</h2>
+            <p style="font-size: 14px;">Star & Fork on GitHub</p>
+            <i class="fa-solid fa-code-branch icon-bg" style="font-size: 80px; opacity: 0.05;"></i>
+        </div>
+
+        <!-- Sub Card 4: Maintainer -->
+        <div class="glass-card card-maintainer" style="flex-direction: row; align-items: center; justify-content: space-between;">
+            <div>
+                <h2 style="margin-bottom: 4px;">维护者</h2>
+                <p style="margin: 0; font-size: 16px;">@neo1_95 / beautifulboy9527</p>
+                <p style="margin: 4px 0 0 0; font-size: 13px; opacity: 0.5;">Original by geekjourney</p>
+            </div>
+            <div style="width: 60px; height: 60px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                👨‍💻
+            </div>
+        </div>
+
+        <!-- QR Code Card -->
+        <div class="glass-card card-qr">
+            <div class="qr-container">
+                <img src="https://img.t5t6.com/1746665263357-2768e6e0-83e1-475c-85ec-d20b52498bbe.jpg" alt="QR Code" class="qr-image">
+                <span class="qr-text">一起 AI 实战</span>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

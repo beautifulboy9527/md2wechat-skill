@@ -1,58 +1,18 @@
-# Binaries (current directory only)
-/md2wechat
-/md2wechat.exe
-
-# Ignore all binaries (anywhere in the repo)
-**/bin/
-*.exe
-*.dll
-*.so
-*.dylib
-
-# Test binary, built with `go test -c`
-*.test
-
-# Output of the go coverage tool
-*.out
-
-# Dependency directories
-vendor/
-
-# Go workspace file
-go.work
-
-# Configuration files (contain sensitive information)
+# Configuration with secrets
 md2wechat.yaml
-md2wechat.yml
-md2wechat.json
 .md2wechat.yaml
-.md2wechat.yml
-.md2wechat.json
 
-# Log files
-*.log
-logs/
+# Python
+__pycache__/
+*.pyc
 
-# Temporary files
-tmp/
-temp/
-*.tmp
+# Generated Assets
+cover.jpg
+*_wechat.html
+temp_*
+*.png
+*.jpg
 
-# OS files
-.DS_Store
-Thumbs.db
-
-# IDE files
+# Editor
 .vscode/
 .idea/
-*.swp
-*.swo
-*~
-
-# Build output
-dist/
-build/
-
-# Coverage files
-coverage.txt
-coverage.html

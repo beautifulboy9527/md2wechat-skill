@@ -7,12 +7,49 @@ import subprocess
 from PIL import Image
 from io import BytesIO
 
-def generate_image(prompt, binary_path):
+# Add current directory to path to import style_prompts
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+try:
+    import style_prompts
+except ImportError:
+    style_prompts = None
+
+
+def generate_image(prompt, binary_path, style=None, sub_style=None, size="1280x720"):
+    # Enhance prompt with style if provided
+    if style and style_prompts:
+        suffix = style_prompts.get_style_prompt(style, sub_style)
+        if suffix:
+            prompt += suffix
+            print(f"Enhanced prompt: {prompt}")
+
     base_url = 'https://api-inference.modelscope.cn/'
-    # Use env var
+
+    # Use env var or config file
     api_key = os.getenv("IMAGE_API_KEY")
     if not api_key:
-        print(json.dumps({"success": False, "error": "IMAGE_API_KEY environment variable is not set"}))
+        # Try to read from md2wechat.yaml
+        config_files = ["md2wechat.yaml", "md2wechat.yml", ".md2wechat.yaml", ".md2wechat.yml"]
+        for config_file in config_files:
+            if os.path.exists(config_file):
+                try:
+                    with open(config_file, 'r', encoding='utf-8') as f:
+                        for line in f:
+                            if "image_key:" in line:
+                                # Simple parsing: assume "  image_key: "value"" or similar
+                                parts = line.split(":", 1)
+                                if len(parts) == 2:
+                                    key_val = parts[1].strip().strip('"').strip("'")
+                                    if key_val:
+                                        api_key = key_val
+                                        break
+                except Exception:
+                    pass
+            if api_key:
+                break
+    
+    if not api_key:
+        print(json.dumps({"success": False, "error": "IMAGE_API_KEY environment variable is not set and could not be found in config file"}))
         sys.exit(1)
 
     common_headers = {
@@ -27,9 +64,11 @@ def generate_image(prompt, binary_path):
             headers={**common_headers, "X-ModelScope-Async-Mode": "true"},
             data=json.dumps({
                 "model": "Tongyi-MAI/Z-Image-Turbo",
-                "prompt": prompt
+                "prompt": prompt,
+                "size": size
             }, ensure_ascii=False).encode('utf-8')
         )
+
         response.raise_for_status()
         task_id = response.json().get("task_id")
         if not task_id:
@@ -110,9 +149,14 @@ def generate_image(prompt, binary_path):
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print(json.dumps({"success": False, "error": "Usage: python generate_image.py <prompt> <binary_path>"}))
+        print("Usage: python generate_image.py <prompt> <output_path> [style] [sub_style] [size]")
         sys.exit(1)
     
     prompt = sys.argv[1]
-    binary_path = sys.argv[2]
-    generate_image(prompt, binary_path)
+    output_path = sys.argv[2]
+    style = sys.argv[3] if len(sys.argv) > 3 and sys.argv[3] != "None" else None
+    sub_style = sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] != "None" else None
+    size = sys.argv[5] if len(sys.argv) > 5 else "1280x720" # Default to 16:9 for WeChat
+
+    generate_image(prompt, output_path, style, sub_style, size)
+
