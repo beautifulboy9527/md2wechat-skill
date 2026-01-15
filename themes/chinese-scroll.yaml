@@ -17,6 +17,12 @@ prompt: |
   
   请严格按照以下 CSS 样式规则进行内联样式转换：
 
+  /* 容器样式 */
+  .wechat-container {
+    background-color: #ffffff;
+    color: #333333;
+  }
+
   /* 一级标题样式 - 卷轴风格 */
   h1 {
     display: block;

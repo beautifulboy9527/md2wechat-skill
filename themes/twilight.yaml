@@ -18,6 +18,11 @@ prompt: |
   请严格按照以下 CSS 样式规则进行内联样式转换：
 
   /* ==================== 根容器 ==================== */
+  .wechat-container {
+    background-color: #fcfbf9;
+    color: #1a1a1a;
+  }
+
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
     font-size: 17px;

@@ -18,7 +18,16 @@ IMAGE_STYLES = {
         "sub_styles": {
             "ink": "traditional chinese ink painting, watercolor, scroll style, minimalist, zen, negative space",
             "impressionism": "soft natural light, impressionist painting texture, dappled light and shadow, warm dreamy atmosphere",
-            "smoke": "light smoke curling, semi-transparent gradient, flowing texture, hazy dreamy atmosphere"
+            "smoke": "light smoke curling, semi-transparent gradient, flowing texture, hazy dreamy atmosphere",
+            "flowing_gaze": "minimalist line art, vintage book cover aesthetic, woodcut texture, stippling shading, radical perspective shift, worm's eye view or top-down view, vast negative space, surreal, melancholic"
+        }
+    },
+    "fashion": {
+        "name": "时尚杂志",
+        "prompt_suffix": ", high fashion photography, vogue style, bold colors, high contrast, studio lighting, 8k, masterpiece",
+        "sub_styles": {
+            "bold": "neon colors, dark background, geometric shapes, asymmetric composition, cyberpunk vibes",
+            "minimal": "clean white background, helvetica font, minimalist composition, high key lighting"
         }
     },
     "cute": {
@@ -273,6 +282,50 @@ ORIENTAL_CARD_TEMPLATE = """
 </html>
 """
 
+MAGAZINE_TEMPLATE = """
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1000, initial-scale=1.0">
+    <title>Magazine Card</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700;900&family=Noto+Sans+SC:wght@400;700;900&display=swap');
+        body {
+            margin: 0; padding: 40px; min-height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            background: #f0f2f5;
+            font-family: 'Helvetica Neue', 'Noto Sans SC', sans-serif;
+        }
+        .card {
+            background: #050505;
+            color: #ffffff;
+            padding: 60px;
+            width: 800px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        h1 {
+            font-size: 64px; margin: 0 0 30px 0;
+            color: #ccff00;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            line-height: 0.9;
+            border-top: 10px solid #00ccff;
+            padding-top: 30px;
+        }
+        p { font-size: 24px; line-height: 1.6; color: #eeeeee; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>{{ title }}</h1>
+        <p>{{ content }}</p>
+    </div>
+</body>
+</html>
+"""
+
 # Theme Mapping Configuration
 THEME_MAPPING = {
     "default": {
@@ -304,6 +357,11 @@ THEME_MAPPING = {
         "image_style": "art",
         "image_sub_style": "impressionism",
         "html_template": "apple"
+    },
+    "fashion": {
+        "image_style": "fashion",
+        "image_sub_style": "bold",
+        "html_template": "magazine"
     }
 }
 
@@ -329,6 +387,8 @@ def get_html_template(template_name):
         return BRUTAL_CARD_TEMPLATE
     elif template_name == "oriental":
         return ORIENTAL_CARD_TEMPLATE
+    elif template_name == "magazine":
+        return MAGAZINE_TEMPLATE
     return APPLE_BENTO_TEMPLATE # Default
 
 def get_theme_config(theme_name):

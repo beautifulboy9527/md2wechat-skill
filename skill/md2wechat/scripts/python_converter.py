@@ -35,11 +35,12 @@ def split_html_by_sections(html_content, card_mode=False):
         new_soup.html.append(copy.copy(head))
         
         if card_mode:
-            # Card Mode: Gray background, centered white card with shadow
+            # Card Mode: Gray background, centered card with shadow
+            # Note: We removed 'background: #fff' and 'color: #333' to let the Theme CSS control it.
             new_body = new_soup.new_tag("body", attrs={"style": "margin: 0; padding: 20px; background-color: #f0f2f5;"})
             new_container = new_soup.new_tag("div", attrs={
                 "class": "wechat-container",
-                "style": "width: 85%; max-width: 800px; margin: 20px auto; background: #fff; padding: 50px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 17px; line-height: 1.8; color: #333;"
+                "style": "width: 85%; max-width: 800px; margin: 20px auto; padding: 50px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 17px; line-height: 1.8;"
             })
         else:
             # Normal Mode: White background, full width
