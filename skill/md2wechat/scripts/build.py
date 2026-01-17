@@ -110,13 +110,21 @@ def build_article(input_file, output_file=None, upload=False, mode="text"):
     themes_dir = os.path.join(os.path.dirname(SCRIPTS_DIR), "../../themes")
     try:
         # python_converter returns a FULL HTML document with inline CSS
-        final_html = python_converter.convert_markdown_to_wechat(body_content, theme, themes_dir)
+        raw_html = python_converter.convert_markdown_to_wechat(body_content, theme, themes_dir)
+        
+        # 3.5 Asset Processing (New Step)
+        # Decoupled generation of AI images and HTML visualizations
+        import processor
+        asset_processor = processor.AssetProcessor(os.path.dirname(os.path.abspath(input_file)))
+        final_html = asset_processor.process(raw_html)
         
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write(final_html)
             
     except Exception as e:
         print(f"❌ Conversion failed: {e}")
+        import traceback
+        traceback.print_exc()
         return
 
     # 4. Post-processing (Footer) - Only for text mode or before rendering image

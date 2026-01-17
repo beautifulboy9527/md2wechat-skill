@@ -45,17 +45,8 @@ class WeChatUploader:
     def process_html_images(self, html_content, base_dir="."):
         """
         Finds local images in HTML, uploads them to WeChat, and replaces src with WeChat URL.
-        Also handles AI generation syntax: src="__generate:prompt|size=16:9"
-        Returns processed HTML.
+        Now simplified to ONLY handle local files. Asset generation should happen BEFORE this step.
         """
-        try:
-            import sys
-            sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-            from generate_image import generate_image_file
-        except ImportError:
-            generate_image_file = None
-            print("⚠️ Warning: generate_image module not found. AI generation will be skipped.")
-
         soup = BeautifulSoup(html_content, 'html.parser')
         images = soup.find_all('img')
         
@@ -64,109 +55,30 @@ class WeChatUploader:
             if not src:
                 continue
 
-            if src.startswith('__generate:'):
-                # AI Generation
-                if not generate_image_file:
-                    print(f"⚠️ Skipping AI generation for {src}: Module not available")
-                    continue
+            # Skip already uploaded (http) or data URIs (though we should upload those too if possible, but usually they are small)
+            if src.startswith('http'):
+                continue
                 
-                # Parse prompt and optional parameters (e.g. "prompt|size=16:9")
-                raw_prompt = src[len('__generate:'):]
-                prompt = raw_prompt
-                size = None
-                
-                if '|' in raw_prompt:
-                    parts = raw_prompt.split('|')
-                    prompt = parts[0]
-                    for part in parts[1:]:
-                        if part.startswith('size=') or part.startswith('ratio='):
-                            size = part.split('=')[1]
-                            # Normalize ratio to size string if needed
-                            if size == "16:9":
-                                pass # generate_image handles this
-                            elif size == "1:1":
-                                pass
-                            elif size == "9:16":
-                                pass
-
-                print(f"🎨 Generating AI image for prompt: {prompt} (Size: {size})...")
-                
-                temp_file = f"temp_gen_{int(time.time())}_{hash(prompt)}.jpg"
-                try:
-                    # Generate local file with size parameter
-                    local_path, _ = generate_image_file(prompt, temp_file, size=size)
-                    
-                    # Upload to WeChat
-                    print(f"📤 Uploading generated image...")
-                    media_id, wechat_url = self.upload_image(local_path)
-                    img['src'] = wechat_url
-                    
-                    # Cleanup
-                    if os.path.exists(local_path):
-                        os.remove(local_path)
-                        
-                except Exception as e:
-                    print(f"⚠️ Failed to generate/upload AI image: {e}")
-
-            elif src.startswith('__html_base64:'):
-                # HTML Screenshot
-                import base64
-                encoded = src[len('__html_base64:'):]
-                # Remove trailing __ if present
-                if encoded.endswith('__'): encoded = encoded[:-2]
-                
-                try:
-                    html_content = base64.b64decode(encoded).decode('utf-8')
-                    print(f"📊 Rendering HTML visualization...")
-                    
-                    # Save to temp html
-                    temp_html = f"temp_viz_{int(time.time())}.html"
-                    temp_img = f"temp_viz_{int(time.time())}.png"
-                    
-                    # Wrap in basic HTML
-                    full_viz_html = f"<html><body style='margin:0;padding:0;'>{html_content}</body></html>"
-                    with open(temp_html, 'w', encoding='utf-8') as f:
-                        f.write(full_viz_html)
-                        
-                    # Render using html_to_image.py (subprocess)
-                    import subprocess
-                    script_dir = os.path.dirname(os.path.abspath(__file__))
-                    render_script = os.path.join(script_dir, "html_to_image.py")
-                    
-                    subprocess.run(
-                        ["python", render_script, temp_html, temp_img, "--width", "1080"],
-                        check=True
-                    )
-                    
-                    # Upload
-                    print(f"📤 Uploading visualization...")
-                    media_id, wechat_url = self.upload_image(temp_img)
-                    img['src'] = wechat_url
-                    
-                    # Cleanup
-                    if os.path.exists(temp_html): os.remove(temp_html)
-                    if os.path.exists(temp_img): os.remove(temp_img)
-                    
-                except Exception as e:
-                    print(f"⚠️ Failed to render/upload HTML viz: {e}")
-            
-            elif not src.startswith('http'):
-                # Local file
+            # Handle Local file
+            # If it's an absolute path, use it. If relative, join with base_dir.
+            if os.path.isabs(src):
+                local_path = src
+            else:
                 local_path = os.path.join(base_dir, src)
+            
+            if os.path.exists(local_path):
                 print(f"📤 Uploading image: {local_path}...")
                 try:
                     media_id, wechat_url = self.upload_image(local_path)
                     img['src'] = wechat_url
                 except Exception as e:
                     print(f"⚠️ Failed to upload image {src}: {e}")
+            else:
+                print(f"⚠️ Image not found: {local_path}")
         
-        # FINAL CLEANUP: Ensure we return only the body content (fragment)
-        # If the soup contains <html> or <body> tags, extract the inner content.
+        # Return inner HTML of body if possible
         if soup.body:
-            # Return the inner HTML of the body
             return "".join([str(x) for x in soup.body.contents])
-        
-        # If no body tag, but has html tag?
         if soup.html:
             return "".join([str(x) for x in soup.html.contents])
             
