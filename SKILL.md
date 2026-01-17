@@ -83,6 +83,17 @@ python skill/md2wechat/scripts/build.py <input_file.md> --mode image --upload
 *   `twilight`: Dark mode, tech-focused.
 *   `autumn-warm`: Warm colors, emotional.
 
+## ⚙️ Configuration (md2wechat.yaml)
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `app_id` | WeChat Official Account AppID | Yes |
+| `app_secret` | WeChat API Secret | Yes |
+| `image_provider` | `modelscope` (default) or `openai` | No |
+| `image_key` | API Key for image provider | Yes (for AI images) |
+| `image_api_base` | Custom API Base URL (for `openai` provider) | No |
+| `image_model` | Model name (e.g. `dall-e-3`, `flux`) | No |
+
 ## ⚠️ Important Notes
 
 *   **Privacy**: Do NOT upload `md2wechat.yaml` or any credentials to Git.

@@ -10,8 +10,11 @@ __pycache__/
 cover.jpg
 *_wechat.html
 temp_*
-*.png
-*.jpg
+assets/generated/
+# Ignore root level images that might be generated
+/*.jpg
+/*.png
+!assets/donate_qr.jpg
 
 # Editor
 .vscode/

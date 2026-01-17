@@ -1,0 +1,15 @@
+# 微信公众号配置 (必需)
+app_id: "your_wechat_app_id"
+app_secret: "your_wechat_app_secret"
+
+# AI 生图配置 (可选)
+# 模式1: ModelScope (默认)
+# image_provider: "modelscope"
+# image_key: "your_modelscope_api_key"
+# image_model: "Tongyi-MAI/Z-Image-Turbo"
+
+# 模式2: OpenAI 兼容接口 (支持 DALL-E, Midjourney-API, Nano, Seedream 等)
+# image_provider: "openai"
+# image_api_base: "https://api.openai.com/v1" # 或者第三方中转地址
+# image_key: "sk-..."
+# image_model: "dall-e-3" # 或者 flux, midjourney 等

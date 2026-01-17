@@ -35,13 +35,22 @@ pip install -r requirements.txt
 ```
 
 ### 2. 配置
-
-在项目根目录创建 `md2wechat.yaml` (已在 .gitignore 中排除，保障隐私):
+在项目根目录创建 `md2wechat.yaml` (参考 `md2wechat.example.yaml`):
 
 ```yaml
 app_id: "你的微信AppID"
 app_secret: "你的微信AppSecret"
-image_key: "你的AI绘图Key" # 可选
+
+# --- AI 生图配置 ---
+# 方式 A: 使用 ModelScope (默认)
+image_provider: "modelscope"
+image_key: "你的Key"
+
+# 方式 B: 使用 OpenAI 兼容接口 (支持 Nano, Seedream, DALL-E 等)
+# image_provider: "openai"
+# image_api_base: "https://api.3rdparty.com/v1"
+# image_key: "sk-..."
+# image_model: "flux-pro" 
 ```
 
 ### 3. 使用
