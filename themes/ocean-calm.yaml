@@ -1,38 +1,47 @@
 name: ocean-calm
-description: A calm, blue-toned theme for professional and technical content.
+description: A premium, modern blue-toned theme with depth and elegance.
 author: Antigravity
 
 # Global Styles
-body_style: "font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', Arial, sans-serif; font-size: 16px; line-height: 1.8; color: #333333; letter-spacing: 0.05em; text-align: justify;"
+# Added background color to body for contrast with the container
+body_style: "font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', Arial, sans-serif; font-size: 16px; line-height: 1.8; color: #333333; letter-spacing: 0.05em; text-align: justify; background-color: #f4f7f9;"
 
 # Container Style (WeChat specific wrapper)
-container_style: "padding: 20px; background-color: #ffffff;"
+# Added shadow and rounded corners for a card-like effect
+container_style: "padding: 30px 20px; background-color: #ffffff; margin: 10px; border-radius: 8px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);"
 
 # Element Styles
-h1_style: "font-size: 24px; font-weight: bold; color: #0f4c75; margin-top: 40px; margin-bottom: 20px; text-align: center; border-bottom: 2px solid #0f4c75; padding-bottom: 10px;"
-h2_style: "font-size: 20px; font-weight: bold; color: #3282b8; margin-top: 35px; margin-bottom: 15px; padding-left: 10px; border-left: 4px solid #3282b8; line-height: 1.4;"
-h3_style: "font-size: 18px; font-weight: bold; color: #3282b8; margin-top: 25px; margin-bottom: 10px;"
+# H1: More modern, centered with a subtle gradient underline
+h1_style: "font-size: 26px; font-weight: bold; color: #0f4c75; margin-top: 20px; margin-bottom: 30px; text-align: center; line-height: 1.4; background-image: linear-gradient(to right, #3282b8, #0f4c75); -webkit-background-clip: text; -webkit-text-fill-color: transparent; padding-bottom: 15px; border-bottom: 1px solid rgba(15, 76, 117, 0.1);"
 
-p_style: "margin-bottom: 20px; text-align: justify;"
+# H2: Left border with a gradient, more spacing
+h2_style: "font-size: 20px; font-weight: bold; color: #0f4c75; margin-top: 40px; margin-bottom: 20px; padding-left: 12px; border-left: 5px solid #3282b8; line-height: 1.4; background: linear-gradient(90deg, rgba(50,130,184,0.1) 0%, rgba(255,255,255,0) 100%); padding-top: 5px; padding-bottom: 5px;"
 
-strong_style: "color: #0f4c75; font-weight: bold;"
+# H3: Subtle, darker blue
+h3_style: "font-size: 18px; font-weight: bold; color: #3282b8; margin-top: 30px; margin-bottom: 15px; padding-left: 5px;"
 
-blockquote_style: "border-left: 4px solid #bbe1fa; background-color: #f0f8ff; color: #555555; padding: 15px; margin: 20px 0; border-radius: 4px;"
+# Paragraphs: Justified, good reading rhythm
+p_style: "margin-bottom: 20px; text-align: justify; color: #4a4a4a; line-height: 1.8;"
 
-ul_style: "margin-bottom: 20px; padding-left: 20px;"
-ol_style: "margin-bottom: 20px; padding-left: 20px;"
-li_style: "margin-bottom: 8px;"
+# Strong: Highlight color
+strong_style: "color: #0f4c75; font-weight: bold; background: linear-gradient(to bottom, transparent 60%, rgba(50,130,184,0.2) 60%);"
 
-# Code Block Styles (WeChat Friendly)
-# pre: The container for the code
-pre_style: "background-color: #282c34; color: #abb2bf; padding: 15px; border-radius: 8px; overflow-x: auto; margin: 20px 0; font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; font-size: 14px; line-height: 1.5; -webkit-overflow-scrolling: touch;"
+# Blockquote: Modern card style
+blockquote_style: "border-left: none; border-top: 2px solid #3282b8; background-color: #f8fbff; color: #555555; padding: 20px; margin: 30px 0; border-radius: 0 0 8px 8px; box-shadow: 0 2px 8px rgba(50,130,184,0.1); font-style: italic;"
 
-# code: The actual code text
-code_style: "font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; background-color: rgba(27,31,35,0.05); padding: 2px 4px; border-radius: 3px; color: #d63384;"
+# Lists
+ul_style: "margin-bottom: 20px; padding-left: 20px; color: #4a4a4a;"
+ol_style: "margin-bottom: 20px; padding-left: 20px; color: #4a4a4a;"
+li_style: "margin-bottom: 10px;"
 
-# Specific style for code INSIDE pre (reset background/padding)
+# Code Blocks
+pre_style: "background-color: #282c34; color: #abb2bf; padding: 20px; border-radius: 8px; overflow-x: auto; margin: 25px 0; font-family: Consolas, Monaco, monospace; font-size: 13px; line-height: 1.6; box-shadow: 0 4px 12px rgba(0,0,0,0.15);"
+code_style: "font-family: Consolas, Monaco, monospace; background-color: rgba(50,130,184,0.1); padding: 2px 6px; border-radius: 4px; color: #0f4c75; font-size: 0.9em;"
 code_block_style: "background-color: transparent; padding: 0; color: inherit; border-radius: 0;"
 
-link_style: "color: #3282b8; text-decoration: none; border-bottom: 1px dashed #3282b8;"
+# Links
+link_style: "color: #3282b8; text-decoration: none; border-bottom: 1px solid rgba(50,130,184,0.3); transition: border-color 0.2s;"
 
-image_style: "display: block; margin: 30px auto; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"
+# Images
+image_style: "display: block; margin: 40px auto; max-width: 100%; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.12);"
+hr_style: "border: 0; height: 1px; background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(50,130,184,0.3), rgba(0, 0, 0, 0)); margin: 40px 0;"

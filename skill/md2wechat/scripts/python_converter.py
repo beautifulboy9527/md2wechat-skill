@@ -121,6 +121,18 @@ def convert_markdown_to_wechat(markdown_content, theme_name="default", themes_di
             'sane_lists'
         ]
     )
+
+    # --- REMOVE DUPLICATE TITLE LOGIC ---
+    # WeChat automatically displays the article title at the top.
+    # If the markdown contains an H1 title at the start, it will look like a duplicate.
+    # We remove the first H1 tag by default.
+    if frontmatter.get("remove_title", True):
+        soup = BeautifulSoup(html_body, 'html.parser')
+        h1 = soup.find('h1')
+        if h1:
+            print(f"   ✂️ Removing duplicate title (H1): {h1.get_text()[:20]}...")
+            h1.decompose()
+            html_body = str(soup)
     
     # --- SMART IMAGE INSERTION LOGIC ---
     # If auto_image is enabled in frontmatter, insert image placeholders after H2

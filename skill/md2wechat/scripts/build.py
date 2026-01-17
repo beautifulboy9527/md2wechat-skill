@@ -256,7 +256,16 @@ def build_article(input_file, output_file=None, upload=False, mode="text"):
                 processed_html = uploader.process_html_images(upload_content, os.path.dirname(input_file))
                 
                 # C. Upload Draft
-                title = config.get("title", os.path.splitext(os.path.basename(input_file))[0])
+                title = config.get("title")
+                if not title:
+                    # Try to extract from first H1 in raw markdown (before parsing)
+                    # We have raw_content available from earlier
+                    h1_match = re.search(r'^#\s+(.+)$', raw_content, re.MULTILINE)
+                    if h1_match:
+                        title = h1_match.group(1).strip()
+                    else:
+                        title = os.path.splitext(os.path.basename(input_file))[0]
+                
                 digest = config.get("digest", "")
                 author = config.get("author", "")
                 
