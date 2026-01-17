@@ -85,6 +85,22 @@ python skill/md2wechat/scripts/build.py article.md --upload
 *   不会上传任何个人数据至 Git 仓库。
 
 ---
+
+## 🙌 致谢
+
+本项目基于 [geekjourneyx/md2wechat-skill](https://github.com/geekjourneyx/md2wechat-skill) 二次开发。感谢原作者的创意与贡献！
+
+我们在此基础上进行了 Python 重构，增强了本地化处理能力与 AI 生图集成，使其更适合自动化 Agent 使用。
+
+## ☕ 请我喝杯咖啡
+
+如果这个项目对你有帮助，欢迎请作者喝杯咖啡，支持更多开源创作！
+
+<div align="center">
+<img src="assets/donate_qr.jpg" width="300" alt="WeChat Pay">
+</div>
+
+---
 <div align="center">
 Made with ❤️ for Creators
 </div>
