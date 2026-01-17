@@ -45,10 +45,9 @@ class WeChatUploader:
     def process_html_images(self, html_content, base_dir="."):
         """
         Finds local images in HTML, uploads them to WeChat, and replaces src with WeChat URL.
-        Also handles AI generation syntax: src="__generate:prompt"
+        Also handles AI generation syntax: src="__generate:prompt|size=16:9"
         Returns processed HTML.
         """
-        # Lazy import to avoid circular dependency if any, and ensure path is correct
         try:
             import sys
             sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -71,13 +70,31 @@ class WeChatUploader:
                     print(f"⚠️ Skipping AI generation for {src}: Module not available")
                     continue
                 
-                prompt = src[len('__generate:'):]
-                print(f"🎨 Generating AI image for prompt: {prompt}...")
+                # Parse prompt and optional parameters (e.g. "prompt|size=16:9")
+                raw_prompt = src[len('__generate:'):]
+                prompt = raw_prompt
+                size = None
+                
+                if '|' in raw_prompt:
+                    parts = raw_prompt.split('|')
+                    prompt = parts[0]
+                    for part in parts[1:]:
+                        if part.startswith('size=') or part.startswith('ratio='):
+                            size = part.split('=')[1]
+                            # Normalize ratio to size string if needed
+                            if size == "16:9":
+                                pass # generate_image handles this
+                            elif size == "1:1":
+                                pass
+                            elif size == "9:16":
+                                pass
+
+                print(f"🎨 Generating AI image for prompt: {prompt} (Size: {size})...")
                 
                 temp_file = f"temp_gen_{int(time.time())}_{hash(prompt)}.jpg"
                 try:
-                    # Generate local file
-                    local_path, _ = generate_image_file(prompt, temp_file)
+                    # Generate local file with size parameter
+                    local_path, _ = generate_image_file(prompt, temp_file, size=size)
                     
                     # Upload to WeChat
                     print(f"📤 Uploading generated image...")
@@ -90,8 +107,48 @@ class WeChatUploader:
                         
                 except Exception as e:
                     print(f"⚠️ Failed to generate/upload AI image: {e}")
-                    # Keep placeholder or maybe set to a broken image indicator?
-                    # For now, keep as is so user sees the error in src
+
+            elif src.startswith('__html_base64:'):
+                # HTML Screenshot
+                import base64
+                encoded = src[len('__html_base64:'):]
+                # Remove trailing __ if present
+                if encoded.endswith('__'): encoded = encoded[:-2]
+                
+                try:
+                    html_content = base64.b64decode(encoded).decode('utf-8')
+                    print(f"📊 Rendering HTML visualization...")
+                    
+                    # Save to temp html
+                    temp_html = f"temp_viz_{int(time.time())}.html"
+                    temp_img = f"temp_viz_{int(time.time())}.png"
+                    
+                    # Wrap in basic HTML
+                    full_viz_html = f"<html><body style='margin:0;padding:0;'>{html_content}</body></html>"
+                    with open(temp_html, 'w', encoding='utf-8') as f:
+                        f.write(full_viz_html)
+                        
+                    # Render using html_to_image.py (subprocess)
+                    import subprocess
+                    script_dir = os.path.dirname(os.path.abspath(__file__))
+                    render_script = os.path.join(script_dir, "html_to_image.py")
+                    
+                    subprocess.run(
+                        ["python", render_script, temp_html, temp_img, "--width", "1080"],
+                        check=True
+                    )
+                    
+                    # Upload
+                    print(f"📤 Uploading visualization...")
+                    media_id, wechat_url = self.upload_image(temp_img)
+                    img['src'] = wechat_url
+                    
+                    # Cleanup
+                    if os.path.exists(temp_html): os.remove(temp_html)
+                    if os.path.exists(temp_img): os.remove(temp_img)
+                    
+                except Exception as e:
+                    print(f"⚠️ Failed to render/upload HTML viz: {e}")
             
             elif not src.startswith('http'):
                 # Local file
@@ -100,10 +157,19 @@ class WeChatUploader:
                 try:
                     media_id, wechat_url = self.upload_image(local_path)
                     img['src'] = wechat_url
-                    # img['data-src'] = wechat_url # WeChat sometimes uses data-src
                 except Exception as e:
                     print(f"⚠️ Failed to upload image {src}: {e}")
         
+        # FINAL CLEANUP: Ensure we return only the body content (fragment)
+        # If the soup contains <html> or <body> tags, extract the inner content.
+        if soup.body:
+            # Return the inner HTML of the body
+            return "".join([str(x) for x in soup.body.contents])
+        
+        # If no body tag, but has html tag?
+        if soup.html:
+            return "".join([str(x) for x in soup.html.contents])
+            
         return str(soup)
 
     def upload_draft(self, title, content, thumb_media_id=None, author="", digest=""):
@@ -116,14 +182,15 @@ class WeChatUploader:
             "digest": digest,
             "content": content,
             "content_source_url": "",
-            "thumb_media_id": thumb_media_id if thumb_media_id else "",
             "need_open_comment": 0,
             "only_fans_can_comment": 0
         }
         
+        if thumb_media_id:
+            article["thumb_media_id"] = thumb_media_id
+        
         payload = {"articles": [article]}
         
-        # Ensure proper encoding for Chinese characters
         resp = requests.post(url, data=json.dumps(payload, ensure_ascii=False).encode('utf-8'))
         data = resp.json()
         

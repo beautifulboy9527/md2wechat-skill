@@ -1,344 +1,39 @@
+# 赛博朋克主题
 name: cyber
-type: ai
-description: "赛博朋克 - 霓虹，暗黑，未来感"
-version: "2.0"
-style_info:
-  mood: "科幻，未来"
-  colors: "霓虹粉，青色，暗黑背景"
-  best_for: "科幻小说，游戏评论"
-prompt: |
-  你是一位精通微信公众号排版的设计师。请将 Markdown 转换为微信公众号兼容的 HTML。
-  
-  核心要求：
-  1. **必须使用内联样式 (Inline Styles)**：微信不支持 <style> 标签。
-  2. **主容器**：在 <body> 后创建一个主 <div> 包裹所有内容。
-  3. **图片占位符**：使用 <!-- IMG:0 -->, <!-- IMG:1 --> 等格式。
-  4. **颜色保护**：所有 <p> 标签必须显式设置 color 属性。
-  
-  请严格按照以下 CSS 样式规则进行内联样式转换：
+description: "Cyberpunk - High Contrast, Neon, Dark Mode"
+author: Antigravity
 
-  /* 顶层容器样式 */
-  container {
-    text-align: left;
-    line-height: 1.75;
-    font-family: "Chakra Petch", "Rajdhani", sans-serif;
-    color: #e0e0e0;
-    background: #121212;
-    padding: 1.5em;
-    text-shadow: 0 0 1px rgba(255,105,180,0.1);
-    max-width: 900px;
-    margin: 0 auto;
-    border: 1px solid rgba(255,0,255,0.1);
-    box-shadow: 0 0 20px rgba(0,0,0,0.8);
-  }
+# Explicit Wrapper for Dark Mode Stability
+wrapper: |
+  <table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #050505; width: 100%;">
+    <tr>
+      <td style="padding: 20px; font-family: 'Courier New', Courier, monospace; color: #ffffff;">
+        {{content}}
+      </td>
+    </tr>
+  </table>
 
-  /* 一级标题样式 */
-  h1 {
-    padding: 0.5em 0.8em;
-    border: 1px solid rgba(255,0,255,0.7);
-    border-radius: 3px;
-    margin: 1.5em auto 1.2em;
-    color: #ff99ff;
-    font-size: 1.8em;
-    font-weight: bold;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    text-shadow: 0 0 4px rgba(255,0,255,0.4);
-    box-shadow: 0 0 8px rgba(255,0,255,0.3);
-    background: rgba(255,0,255,0.02);
-    position: relative;
-  }
+# Global Styles
+container_style: ""
 
-  /* 二级标题样式 - 修复装饰元素 */
-  h2 {
-    padding: 0.3em 0.8em;
-    margin: 1.8em 0 0.8em;
-    color: #4bf0ff;
-    background: rgba(0,255,255,0.02);
-    font-size: 1.4em;
-    font-weight: bold;
-    text-align: left;
-    border-radius: 2px;
-    box-shadow: 0 0 5px rgba(0,255,255,0.15);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    text-shadow: 0 0 2px rgba(0,255,255,0.3);
-    border-left: 2px solid rgba(0,255,255,0.7);
-    display: flex;
-    align-items: center;
-  }
+# Elements
+h1_style: "display: block; font-size: 32px; font-weight: bold; color: #00ff41; text-shadow: 0 0 5px #00ff41; border-bottom: 2px solid #00ff41; padding-bottom: 10px; margin-bottom: 30px; text-transform: uppercase;"
 
-  /* 二级标题装饰元素 - 修复 */
-  h2::before {
-    content: "//";
-    color: rgba(0,255,255,0.5);
-    margin-right: 0.5em;
-    font-weight: normal;
-    display: inline-block;
-  }
+h2_style: "display: block; font-size: 24px; font-weight: bold; color: #ff00ff; text-shadow: 0 0 5px #ff00ff; border-left: 5px solid #00ff41; padding-left: 15px; margin-top: 40px; margin-bottom: 20px; background: rgba(0, 255, 65, 0.1);"
 
-  /* 三级标题样式 */
-  h3 {
-    padding: 0.3em 0.8em;
-    font-size: 1.1em;
-    line-height: 1.6;
-    border-left: 2px solid rgba(255,0,255,0.6);
-    background: rgba(255,0,255,0.01);
-    color: #ff99ff;
-    margin: 1.2em 0 0.8em;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    display: flex;
-    align-items: center;
-  }
+h3_style: "font-size: 20px; font-weight: bold; color: #00ffff; margin-top: 30px; margin-bottom: 15px;"
 
-  /* 三级标题装饰元素 */
-  h3::before {
-    content: ">";
-    color: rgba(255,0,255,0.5);
-    margin-right: 0.5em;
-    font-weight: normal;
-    display: inline-block;
-  }
+p_style: "font-size: 16px; line-height: 1.8; color: #ffffff; margin-bottom: 20px; text-align: justify;"
 
-  /* 段落样式 */
-  p {
-    margin: 1em 0;
-    letter-spacing: 0.02em;
-    color: #e0e0e0;
-    text-align: justify;
-    line-height: 1.7;
-    font-family: "IBM Plex Mono", "Fira Code", monospace;
-    font-size: 0.95em;
-  }
+blockquote_style: "margin: 30px 0; padding: 20px; background: #111; border: 1px solid #00ff41; color: #00ff41; font-family: monospace; box-shadow: 4px 4px 0px #ff00ff;"
 
-  /* 引用样式 */
-  blockquote {
-    font-style: italic;
-    padding: 0.8em 1.2em;
-    border-left: 2px solid rgba(0,255,255,0.6);
-    color: #b0ffff;
-    background: rgba(0,255,255,0.02);
-    margin: 1.2em 0;
-    box-shadow: 0 0 5px rgba(0,255,255,0.1);
-    font-size: 0.95em;
-  }
+ul_style: "list-style-type: square; padding-left: 20px; color: #00ff41;"
+li_style: "margin-bottom: 10px; color: #ffffff;"
 
-  /* 行内代码样式 */
-  codespan {
-    font-size: 90%;
-    color: #ff99ff;
-    background: rgba(255,0,255,0.05);
-    padding: 2px 5px;
-    border-radius: 3px;
-    font-family: "IBM Plex Mono", "Fira Code", monospace;
-    border: 1px solid rgba(255,0,255,0.15);
-  }
+strong_style: "color: #050505; background-color: #00ff41; padding: 0 4px; font-weight: bold;"
 
-  /* 代码块样式 */
-  pre {
-    background: rgba(18, 18, 24, 0.7);
-    border: 1px solid rgba(0,255,255,0.15);
-    border-radius: 3px;
-    padding: 1em;
-    margin: 1.5em 0;
-    overflow-x: auto;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5), inset 0 0 5px rgba(0,255,255,0.05);
-    position: relative;
-  }
+pre_style: "background-color: #1a1a1a; padding: 20px; border: 1px solid #00ff41; color: #00ff41; overflow-x: auto; margin: 20px 0;"
+code_style: "font-family: monospace; background-color: #333; padding: 2px 6px; color: #ff00ff;"
 
-  /* 代码块装饰 */
-  pre::before {
-    content: "<code>";
-    position: absolute;
-    top: -0.7em;
-    left: 1em;
-    background: #121212;
-    padding: 0 0.5em;
-    color: rgba(0,255,255,0.5);
-    font-size: 0.8em;
-    font-family: "IBM Plex Mono", monospace;
-  }
-
-  code {
-    font-family: "IBM Plex Mono", "Fira Code", monospace;
-    color: #b0ffff;
-    text-shadow: 0 0 1px rgba(0,255,255,0.2);
-    font-size: 0.9em;
-  }
-
-  /* 分割线样式 - 修复装饰元素 */
-  hr {
-    height: 1px;
-    border: none;
-    margin: 2.5em 0;
-    background: linear-gradient(to right, rgba(255,0,255,0.2), rgba(0,255,255,0.2));
-    box-shadow: 0 0 2px rgba(0,255,255,0.2);
-    position: relative;
-  }
-
-  /* 分割线装饰元素 - 修复 */
-  hr::after {
-    content: "⬤ ⬤ ⬤";
-    display: block;
-    text-align: center;
-    letter-spacing: 1.5em;
-    color: rgba(255,0,255,0.3);
-    position: absolute;
-    top: -0.6em;
-    left: 0;
-    right: 0;
-    font-size: 0.4em;
-    background: #121212;
-    width: fit-content;
-    margin: 0 auto;
-    padding: 0 1em;
-  }
-
-  /* 链接样式 */
-  a {
-    color: #99ffff;
-    text-decoration: none;
-    border-bottom: 1px dashed rgba(0,255,255,0.3);
-    text-shadow: 0 0 1px rgba(0,255,255,0.2);
-    transition: all 0.3s ease;
-    padding: 0 2px;
-  }
-
-  a:hover {
-    color: #ff99ff;
-    border-bottom: 1px dashed rgba(255,0,255,0.3);
-    text-shadow: 0 0 2px rgba(255,0,255,0.3);
-    background: rgba(255,0,255,0.03);
-  }
-
-  /* 列表样式 */
-  ul, ol {
-    padding-left: 1.8em;
-    margin: 1em 0;
-  }
-
-  li {
-    margin: 0.5em 0;
-    color: #e0e0e0;
-    position: relative;
-  }
-
-  /* 列表项装饰 - 修复 */
-  ul li {
-    list-style-type: none;
-    position: relative;
-  }
-
-  ul li::before {
-    content: "»";
-    color: #ff99ff;
-    position: absolute;
-    left: -1.2em;
-    text-shadow: 0 0 2px rgba(255,0,255,0.3);
-  }
-
-  /* 表格样式 */
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 1.5em 0;
-    border: 1px solid rgba(0,255,255,0.15);
-  }
-
-  th {
-    background: rgba(0,255,255,0.07);
-    color: #b0ffff;
-    padding: 0.8em;
-    text-align: left;
-    border-bottom: 1px solid rgba(0,255,255,0.2);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-size: 0.9em;
-  }
-
-  td {
-    padding: 0.8em;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-  }
-
-  tr:nth-child(even) {
-    background: rgba(255,255,255,0.02);
-  }
-
-  /* 图片样式 */
-  img {
-    max-width: 100%;
-    border: 1px solid rgba(0,255,255,0.2);
-    border-radius: 2px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    margin: 1em 0;
-  }
-
-  /* 强调文本 */
-  strong {
-    color: #ff99ff;
-    font-weight: bold;
-    text-shadow: 0 0 1px rgba(255,0,255,0.2);
-  }
-
-  em {
-    color: #b0ffff;
-    font-style: italic;
-    text-shadow: 0 0 1px rgba(0,255,255,0.2);
-  }
-
-  /* 滚动条样式 */
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: #121212;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, rgba(255,153,255,0.7), rgba(153,255,255,0.7));
-    border-radius: 4px;
-  }
-
-  /* 键盘样式 */
-  kbd {
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 3px;
-    box-shadow: 0 2px 0 rgba(0,0,0,0.2);
-    color: #e0e0e0;
-    display: inline-block;
-    font-size: 0.85em;
-    line-height: 1;
-    padding: 2px 5px;
-    margin: 0 2px;
-  }
-
-  /* 标题装饰 - 额外效果 */
-  h1::before, h1::after {
-    content: "[";
-    color: rgba(255,0,255,0.6);
-    position: absolute;
-    font-size: 1.2em;
-    top: 50%;
-    transform: translateY(-50%);
-    text-shadow: 0 0 5px rgba(255,0,255,0.5);
-  }
-
-  h1::before {
-    left: 10px;
-  }
-
-  h1::after {
-    right: 10px;
-    content: "]";
-  }
-  
-  输出要求：
-  - 只输出 HTML 代码，包裹在 Markdown 代码块中。
-  - 不要包含任何解释文字。
+link_style: "color: #00ffff; text-decoration: underline;"
+image_style: "display: block; margin: 30px auto; max-width: 100%; border: 2px solid #00ff41; box-shadow: 0 0 10px #00ff41;"

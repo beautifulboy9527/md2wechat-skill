@@ -4,64 +4,64 @@
 IMAGE_STYLES = {
     "tech": {
         "name": "科技未来",
-        "prompt_suffix": ", futuristic, sci-fi, cyberpunk, neon lights, high tech, mechanical details, sharp edges, 8k resolution, unreal engine 5 render",
+        "prompt_suffix": ", futuristic, sci-fi, cyberpunk, neon lighting, mechanical details, sharp focus, cinematic composition, unreal engine 5 render",
         "sub_styles": {
-            "sci_fi": "mechanical edges, streamline design, neon accents, sharp corners, metal texture, chip patterns",
-            "virtual": "dark background, digital deconstruction, cut lines, future tech visual",
-            "data": "dark blue tech background, digital matrix, holographic projection, circuit board elements",
-            "blueprint": "blue engineering blueprint background, technical lines, precise geometric structure, white highlight text"
+            "sci_fi": "mechanical edges, streamline design, neon accents, sharp corners, metal texture, chip patterns, industrial lighting",
+            "virtual": "dark background, digital deconstruction, cut lines, future tech visual, volumetric lighting",
+            "data": "dark blue tech background, digital matrix, holographic projection, circuit board elements, depth of field",
+            "blueprint": "blue engineering blueprint background, technical lines, precise geometric structure, white highlight text, schematic view"
         }
     },
     "art": {
         "name": "艺术情感",
-        "prompt_suffix": ", artistic, abstract, elegant, emotional, high quality, detailed, masterpiece",
+        "prompt_suffix": ", artistic, abstract, elegant, emotional, detailed texture, professional lighting, museum quality",
         "sub_styles": {
-            "ink": "traditional chinese ink painting, watercolor, scroll style, minimalist, zen, negative space",
-            "impressionism": "soft natural light, impressionist painting texture, dappled light and shadow, warm dreamy atmosphere",
-            "smoke": "light smoke curling, semi-transparent gradient, flowing texture, hazy dreamy atmosphere",
+            "ink": "traditional chinese ink painting, watercolor, scroll style, minimalist, zen, negative space, wet wash",
+            "impressionism": "soft natural light, impressionist painting texture, dappled light and shadow, warm atmosphere, visible brushstrokes",
+            "smoke": "light smoke curling, semi-transparent gradient, flowing texture, hazy atmosphere, ethereal",
             "flowing_gaze": "minimalist line art, vintage book cover aesthetic, woodcut texture, stippling shading, radical perspective shift, worm's eye view or top-down view, vast negative space, surreal, melancholic"
         }
     },
     "fashion": {
         "name": "时尚杂志",
-        "prompt_suffix": ", high fashion photography, vogue style, bold colors, high contrast, studio lighting, 8k, masterpiece",
+        "prompt_suffix": ", high fashion photography, vogue style, bold colors, high contrast, studio lighting, professional color grading",
         "sub_styles": {
-            "bold": "neon colors, dark background, geometric shapes, asymmetric composition, cyberpunk vibes",
-            "minimal": "clean white background, helvetica font, minimalist composition, high key lighting"
+            "bold": "neon colors, dark background, geometric shapes, asymmetric composition, cyberpunk vibes, rim lighting",
+            "minimal": "clean white background, helvetica font, minimalist composition, high key lighting, soft shadows"
         }
     },
     "cute": {
         "name": "活泼可爱",
-        "prompt_suffix": ", cute, colorful, vibrant, cartoon style, soft lighting, 3d render, clay texture",
+        "prompt_suffix": ", cute, colorful, vibrant, cartoon style, soft lighting, 3d render, clay texture, c4d render",
         "sub_styles": {
-            "pop": "bright summer colors, lively hand-drawn style, watercolor splash, scene elements",
-            "candy": "bright candy colors, candy collage, colorful, sweet and happy atmosphere",
-            "doodle": "colorful graffiti art, thick bold outlines, dynamic structure, hand-drawn print style"
+            "pop": "bright summer colors, lively hand-drawn style, watercolor splash, scene elements, dynamic composition",
+            "candy": "bright candy colors, candy collage, colorful, sweet atmosphere, pastel tones",
+            "doodle": "colorful graffiti art, thick bold outlines, dynamic structure, hand-drawn print style, marker texture"
         }
     },
     "industrial": {
         "name": "工业质感",
-        "prompt_suffix": ", industrial, metallic, rusty, heavy machinery, steam punk, grunge, textured",
+        "prompt_suffix": ", industrial, metallic, rusty, heavy machinery, steam punk, grunge, textured, dramatic lighting",
         "sub_styles": {
-            "metal": "rough metal texture, rust spots, relief structure, mechanical craft, rivet details",
-            "cyber_game": "shocking electric effect, dark blue-purple tone, 3d relief, lightning energy, strong sci-fi game feel"
+            "metal": "rough metal texture, rust spots, relief structure, mechanical craft, rivet details, macro shot",
+            "cyber_game": "shocking electric effect, dark blue-purple tone, 3d relief, lightning energy, strong sci-fi game feel, bloom effect"
         }
     },
     "retro": {
         "name": "复古怀旧",
-        "prompt_suffix": ", retro, vintage, old photo, grainy, noise, classic, 1980s style",
+        "prompt_suffix": ", retro, vintage, old photo, grainy, noise, classic, 1980s style, film photography",
         "sub_styles": {
-            "pixel": "retro game pixel style, bright contrast colors, block splicing, castle game scene",
-            "classic": "gothic variation, slender vertical proportions, sharp straight lines, rich decorative details",
-            "woodblock": "natural rough edges, strong wood carving feel, warm and rustic atmosphere"
+            "pixel": "retro game pixel style, bright contrast colors, block splicing, castle game scene, 8-bit",
+            "classic": "gothic variation, slender vertical proportions, sharp straight lines, rich decorative details, etching style",
+            "woodblock": "natural rough edges, strong wood carving feel, warm and rustic atmosphere, linocut"
         }
     },
     "nature": {
         "name": "自然元素",
-        "prompt_suffix": ", nature, organic, plants, flowers, landscape, natural light, photorealistic",
+        "prompt_suffix": ", nature, organic, plants, flowers, landscape, natural light, photorealistic, macro photography",
         "sub_styles": {
-            "wood": "forest green background, wood texture, organic natural form, vine leaf decoration",
-            "frost": "winter snow background, ice crystal effect, cold tone, semi-transparent texture"
+            "wood": "forest green background, wood texture, organic natural form, vine leaf decoration, sunlight filtering through leaves",
+            "frost": "winter snow background, ice crystal effect, cold tone, semi-transparent texture, bokeh"
         }
     }
 }

@@ -1,8 +1,73 @@
 # 苹果风格主题
 name: apple
-type: api
-description: "Apple 极简风格"
-version: "1.0"
+description: "Apple Aurora - Mesh Gradient, Glassmorphism, Blue/Purple"
+author: Antigravity
 
-# API 模式使用的主题名
-api_theme: "apple"
+# Explicit Wrapper - Aurora Gradient Background
+wrapper: |
+  <table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #ffffff; background-image: linear-gradient(180deg, #FFFFFF 0%, #F0F4FF 100%); width: 100%;">
+    <!-- Add a row for the gradient blobs effect using a background image on the cell if possible, or just rely on the table bg -->
+    <!-- WeChat supports background-image on table/td. Let's try a complex gradient on the TD -->
+    <tr>
+      <td style="
+        padding: 20px; 
+        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+        color: #1D1D1F;
+        background-image: 
+          radial-gradient(at 90% 10%, hsla(260, 100%, 85%, 0.6) 0px, transparent 50%),
+          radial-gradient(at 10% 30%, hsla(210, 100%, 85%, 0.6) 0px, transparent 50%),
+          radial-gradient(at 50% 80%, hsla(280, 100%, 90%, 0.4) 0px, transparent 50%);
+        background-attachment: fixed;
+      ">
+        <!-- Glass Card -->
+        <div style="
+          background-color: rgba(255, 255, 255, 0.65);
+          backdrop-filter: blur(40px) saturate(180%);
+          -webkit-backdrop-filter: blur(40px) saturate(180%);
+          border-radius: 24px;
+          padding: 40px 30px;
+          box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+          border: 1px solid rgba(255, 255, 255, 0.8);
+          margin-bottom: 20px;
+        ">
+          {{content}}
+        </div>
+      </td>
+    </tr>
+  </table>
+
+# Global Styles
+container_style: ""
+
+# Elements
+# H1: Gradient Text (Blue -> Purple) - Reduced size
+h1_style: "display: block; font-size: 32px; line-height: 1.2; font-weight: 800; margin-bottom: 30px; letter-spacing: -0.02em; text-align: center; background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: #007AFF;"
+
+# H2: Gradient Text (Purple -> Blue)
+h2_style: "display: block; font-size: 28px; line-height: 1.2; font-weight: 700; margin-top: 48px; margin-bottom: 24px; letter-spacing: -0.01em; background: linear-gradient(135deg, #5856D6 0%, #007AFF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: #5856D6;"
+
+# H3: Solid System Blue
+h3_style: "font-size: 22px; font-weight: 600; color: #007AFF; margin-top: 32px; margin-bottom: 16px;"
+
+# P: Dark Gray for readability
+p_style: "font-size: 17px; line-height: 1.7; font-weight: 400; color: #1D1D1F; margin-bottom: 24px; text-align: justify;"
+
+# Blockquote: Glass effect with Gradient Border
+blockquote_style: "background-color: rgba(255, 255, 255, 0.5); border-radius: 16px; padding: 24px; margin: 32px 0; color: #1D1D1F; font-size: 19px; line-height: 1.5; font-weight: 500; border-left: 4px solid #5856D6; box-shadow: 0 4px 12px rgba(0,0,0,0.03);"
+
+# Lists
+ul_style: "list-style-type: disc; padding-left: 20px; color: #5856D6; margin-bottom: 24px;"
+li_style: "margin-bottom: 12px; font-size: 17px; line-height: 1.7; color: #1D1D1F;"
+
+# Strong
+strong_style: "color: #007AFF; font-weight: 700;"
+
+# Code / Pre
+pre_style: "background-color: rgba(242, 242, 247, 0.8); padding: 20px; border-radius: 16px; overflow-x: auto; margin: 32px 0; font-size: 14px; font-family: 'SF Mono', Menlo, monospace; border: 1px solid rgba(0,0,0,0.05);"
+code_style: "font-family: 'SF Mono', Menlo, monospace; background-color: rgba(0, 122, 255, 0.1); padding: 2px 6px; border-radius: 6px; color: #007AFF;"
+
+# Links: Gradient underline? No, simple Blue.
+link_style: "color: #007AFF; text-decoration: none; font-weight: 500; border-bottom: 1px solid rgba(0, 122, 255, 0.3);"
+
+# Images: Large Radius, Soft Shadow
+image_style: "display: block; margin: 40px auto; max-width: 100%; border-radius: 24px; box-shadow: 0 12px 36px rgba(0,0,0,0.1);"

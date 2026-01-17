@@ -1,137 +1,38 @@
+# 时尚大胆主题
 name: fashion-bold
-type: ai
-description: "Bold Modern - High Fashion Magazine Style"
-version: "1.0"
-style_info:
-  mood: "Bold, Modern, High Contrast"
-  colors: "Neon Yellow, Hot Pink, Cyan, Black"
-  best_for: "Fashion, Tech, Trends"
-prompt: |
-  You are a top fashion magazine art director. Convert Markdown to HTML with bold, modern styling.
-  
-  Core Requirements:
-  1. **Inline Styles Only**: No <style> tags.
-  2. **Container**: Wrap in a main <div>.
-  3. **Placeholders**: <!-- IMG:0 -->.
-  4. **Colors**: Explicit color for <p>.
+description: "Bold Modern - High Fashion Magazine Style (Light Mode)"
+author: Antigravity
 
-  CSS Rules:
+# Explicit Wrapper with Inline Styles for WeChat Stability
+wrapper: |
+  <table width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #ffffff; width: 100%;">
+    <tr>
+      <td style="padding: 20px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #000000;">
+        {{content}}
+      </td>
+    </tr>
+  </table>
 
-  /* Container - Dark Mode Base */
-  .wechat-container {
-    background-color: #050505;
-    color: #ffffff;
-    padding: 40px;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    overflow: hidden; /* For dynamic shapes */
-  }
+# Global Styles (Applied to elements inside)
+# Note: Container style is handled by wrapper above
+container_style: ""
 
-  /* H1 - Massive, Neon Yellow, Tight Spacing */
-  h1 {
-    display: block;
-    font-size: 3.5em;
-    line-height: 0.9;
-    font-weight: 900;
-    color: #ccff00;
-    text-transform: uppercase;
-    letter-spacing: -2px;
-    margin: 40px 0 20px 0;
-    border-top: 10px solid #00ccff;
-    padding-top: 20px;
-    position: relative;
-  }
+# Elements
+h1_style: "display: block; font-size: 36px; line-height: 1.1; font-weight: 900; color: #000000; text-transform: uppercase; letter-spacing: -1px; margin: 40px 0 20px 0; border-top: 8px solid #ccff00; padding-top: 20px;"
+h2_style: "display: block; font-size: 24px; font-weight: 800; color: #ff00cc; margin: 40px 0 20px 0; padding-left: 15px; border-left: 8px solid #000000; text-transform: uppercase;"
+h3_style: "font-size: 20px; color: #000000; margin-top: 30px; font-weight: 700; border-bottom: 4px solid #00ccff; padding-bottom: 5px; display: inline-block;"
 
-  /* H2 - Hot Pink, Asymmetric */
-  h2 {
-    display: block;
-    font-size: 2.2em;
-    font-weight: 800;
-    color: #ff00cc;
-    margin: 50px 0 20px 0;
-    padding-left: 20px;
-    border-left: 8px solid #ccff00;
-    text-transform: uppercase;
-    letter-spacing: -1px;
-  }
+p_style: "font-size: 17px; line-height: 1.8; color: #000000; margin-bottom: 20px; text-align: justify;"
 
-  /* H3 - Cyan, Geometric */
-  h3 {
-    font-size: 1.5em;
-    color: #00ccff;
-    margin-top: 30px;
-    font-weight: 700;
-    border-bottom: 2px solid #333;
-    padding-bottom: 10px;
-    display: inline-block;
-  }
+strong_style: "color: #ffffff; background-color: #000000; font-weight: bold; padding: 0 4px;"
 
-  /* Paragraphs - Clean White, Readable */
-  p {
-    font-size: 18px;
-    line-height: 1.6;
-    color: #eeeeee;
-    margin-bottom: 20px;
-    text-align: justify;
-  }
+blockquote_style: "margin: 30px 0; padding: 20px; background: #ffffff; border: 3px solid #000000; font-size: 18px; font-weight: 700; font-style: italic; color: #000000; box-shadow: 8px 8px 0px #ccff00;"
 
-  /* Blockquote - The "Pull Quote" Look */
-  blockquote {
-    margin: 40px 0;
-    padding: 30px;
-    background: #111;
-    border: 2px solid #333;
-    font-size: 24px;
-    font-weight: 700;
-    font-style: italic;
-    color: #ccff00;
-    position: relative;
-    box-shadow: 10px 10px 0px #ff00cc; /* Pop Art Shadow */
-  }
+ul_style: "list-style: none; padding-left: 10px; color: #000000;"
+li_style: "margin-bottom: 10px; color: #000000; font-weight: 500;"
 
-  /* Lists - Custom Bullets */
-  ul {
-    list-style: none;
-    padding-left: 20px;
-  }
-  ul li {
-    position: relative;
-    padding-left: 25px;
-    margin-bottom: 10px;
-    color: #ddd;
-  }
-  ul li::before {
-    content: "■";
-    color: #00ccff;
-    position: absolute;
-    left: 0;
-    font-size: 12px;
-    top: 4px;
-  }
+pre_style: "background-color: #f0f0f0; color: #000000; padding: 15px; border: 2px solid #000000; overflow-x: auto; margin: 20px 0;"
+code_style: "font-family: monospace; background-color: #ccff00; padding: 2px 4px; color: #000000;"
 
-  /* Strong - Highlight */
-  strong {
-    color: #ccff00;
-    font-weight: 900;
-    background: rgba(204, 255, 0, 0.1);
-    padding: 0 4px;
-  }
-
-  /* Images - Sharp Edges */
-  img {
-    display: block;
-    width: 100%;
-    margin: 30px 0;
-    border: 1px solid #333;
-    /* Optional: Grayscale filter for style? No, let user decide */
-  }
-  
-  /* HR - Thick Divider */
-  hr {
-    border: none;
-    height: 4px;
-    background: #333;
-    margin: 50px 0;
-  }
-
-  输出要求：
-  - 只输出 HTML 代码，包裹在 Markdown 代码块中。
+link_style: "color: #ff00cc; text-decoration: underline; text-decoration-thickness: 2px; font-weight: bold;"
+image_style: "display: block; width: 100%; margin: 30px 0; border: 3px solid #000000; box-shadow: 5px 5px 0px #00ccff;"

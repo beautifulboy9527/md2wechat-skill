@@ -3,7 +3,6 @@ import os
 import json
 import time
 import requests
-import subprocess
 from PIL import Image
 from io import BytesIO
 
@@ -14,23 +13,23 @@ try:
 except ImportError:
     style_prompts = None
 
-
-def generate_image_file(prompt, output_path, style=None, sub_style=None, size="1280*720"):
+def generate_image_file(prompt, output_path, style=None, sub_style=None, size=None):
     """
-    Generates an image using ModelScope API and saves it to output_path.
-    Returns (output_path, image_url) on success.
+    Generates an image using ModelScope API (Wanx-v1 for better ratio control).
     """
-    # Enhance prompt with style if provided
+    # Enhance prompt
     if style and style_prompts:
         suffix = style_prompts.get_style_prompt(style, sub_style)
         if suffix:
             prompt += suffix
-            print(f"Enhanced prompt: {prompt}")
 
+    # Add ratio keywords
+    if size == "16:9":
+        prompt += ", wide angle, 16:9 aspect ratio, cinematic composition, high resolution, 4k"
+    
     base_url = 'https://api-inference.modelscope.cn/'
-
-    # Use env var or config file
     api_key = os.getenv("IMAGE_API_KEY")
+    
     if not api_key:
         # Try to read from md2wechat.yaml
         config_files = ["md2wechat.yaml", "md2wechat.yml", ".md2wechat.yaml", ".md2wechat.yml"]
@@ -40,7 +39,6 @@ def generate_image_file(prompt, output_path, style=None, sub_style=None, size="1
                     with open(config_file, 'r', encoding='utf-8') as f:
                         for line in f:
                             if "image_key:" in line:
-                                # Simple parsing: assume "  image_key: "value"" or similar
                                 parts = line.split(":", 1)
                                 if len(parts) == 2:
                                     key_val = parts[1].strip().strip('"').strip("'")
@@ -51,118 +49,87 @@ def generate_image_file(prompt, output_path, style=None, sub_style=None, size="1
                     pass
             if api_key:
                 break
-    
+
     if not api_key:
-        raise Exception("IMAGE_API_KEY environment variable is not set and could not be found in config file")
+        raise Exception("IMAGE_API_KEY not set")
 
     common_headers = {
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
+        "X-ModelScope-Async-Mode": "true"
     }
 
-    # 1. Generate Image
+    # Use Z-Image-Turbo
+    model_id = "Tongyi-MAI/Z-Image-Turbo"
+    
+    # Determine size
+    img_size = "1024x1024"
+    if size == "16:9":
+        img_size = "2048x1152" 
+        
+    # OpenAI-compatible format (mostly)
+    payload = {
+        "model": model_id,
+        "prompt": prompt,
+        "size": img_size,
+        "n": 1
+    }
+
+    print(f"🎨 Generating image with {model_id} (Size: {img_size})...")
+
     try:
-        # Note: ModelScope expects size as "Width*Height" (e.g. "1024*1024"), not "x".
+        # Use the v1/images/generations endpoint
         response = requests.post(
             f"{base_url}v1/images/generations",
             headers={**common_headers, "X-ModelScope-Async-Mode": "true"},
-            data=json.dumps({
-                "model": "Tongyi-MAI/Z-Image-Turbo",
-                "prompt": prompt,
-                "size": size
-            }, ensure_ascii=False).encode('utf-8')
+            data=json.dumps(payload, ensure_ascii=False).encode('utf-8')
         )
-
         response.raise_for_status()
         task_id = response.json().get("task_id")
-        if not task_id:
-             raise Exception("No task_id returned")
     except Exception as e:
-        raise Exception(f"Failed to start generation: {str(e)}")
+        print(f"⚠️ Generation request failed: {e}")
+        # Print response content if available for debugging
+        if 'response' in locals():
+            print(f"Response: {response.text}")
+        raise
 
-    # 2. Poll for result
+    # Poll
     image_url = None
-    for _ in range(30): # 30 * 2s = 60s timeout
+    for _ in range(60):
         try:
             result = requests.get(
                 f"{base_url}v1/tasks/{task_id}",
                 headers={**common_headers, "X-ModelScope-Task-Type": "image_generation"},
             )
-            result.raise_for_status()
             data = result.json()
-
             if data["task_status"] == "SUCCEED":
-                if "output_images" in data and len(data["output_images"]) > 0:
+                # Z-Image-Turbo returns output_images list
+                if "output_images" in data and data["output_images"]:
                     image_url = data["output_images"][0]
-                    break
+                # Fallback
+                elif "results" in data.get("output", {}):
+                     image_url = data["output"]["results"][0]["url"]
+                break
             elif data["task_status"] == "FAILED":
-                raise Exception(f"Generation failed: {data.get('message', 'Unknown error')}")
-        except Exception as e:
-             raise Exception(f"Polling error: {str(e)}")
-        
+                raise Exception(f"Generation failed: {data.get('message')}")
+        except Exception:
+            pass
         time.sleep(2)
     
     if not image_url:
-        raise Exception("Generation timed out")
+        raise Exception("Timeout")
 
-    # 3. Download Image
-    try:
-        img_resp = requests.get(image_url)
-        img_resp.raise_for_status()
-        image = Image.open(BytesIO(img_resp.content))
-        image.save(output_path)
-        return output_path, image_url
-    except Exception as e:
-        raise Exception(f"Failed to download/save image: {str(e)}")
-
-
-def generate_image_and_upload(prompt, binary_path, style=None, sub_style=None, size="1280*720"):
-    """
-    CLI wrapper: Generates image and uploads it using the binary.
-    """
-    temp_file = f"temp_{int(time.time())}.jpg"
-    try:
-        _, image_url = generate_image_file(prompt, temp_file, style, sub_style, size)
-        
-        # 4. Upload using binary
-        # We need to capture stdout
-        # Ensure binary_path is absolute or correct relative
-        cmd = [binary_path, "upload_image", temp_file]
-        result = subprocess.check_output(cmd, stderr=subprocess.PIPE)
-        upload_data = json.loads(result)
-        
-        if not upload_data.get("success"):
-             print(result.decode('utf-8')) # Print the error from binary
-             if os.path.exists(temp_file):
-                os.remove(temp_file)
-             sys.exit(1)
-             
-        # 5. Construct final response
-        final_data = upload_data["data"]
-        final_data["prompt"] = prompt
-        final_data["original_url"] = image_url
-        
-        print(json.dumps({"success": True, "data": final_data}))
-        
-    except subprocess.CalledProcessError as e:
-        print(json.dumps({"success": False, "error": f"Upload failed: {e.stderr.decode('utf-8')}"}))
-        sys.exit(1)
-    except Exception as e:
-        print(json.dumps({"success": False, "error": f"Processing error: {str(e)}"}))
-        sys.exit(1)
-    finally:
-        if os.path.exists(temp_file):
-            os.remove(temp_file)
+    # Download
+    img_resp = requests.get(image_url)
+    image = Image.open(BytesIO(img_resp.content))
+    
+    # No cropping needed as Z-Image-Turbo supports native ratio
+    image.save(output_path)
+    return output_path, image_url
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("Usage: python generate_image.py <prompt> <output_path> [style] [sub_style] [size]")
-        sys.exit(1)
-    
-    prompt = sys.argv[1]
-    output_path = sys.argv[2]
-    style = sys.argv[3] if len(sys.argv) > 3 and sys.argv[3] != "None" else None
-    sub_style = sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] != "None" else None
-    size = sys.argv[5] if len(sys.argv) > 5 else "1280*720" # Default to 16:9 for WeChat
-
-    generate_image_and_upload(prompt, output_path, style, sub_style, size)
+    if len(sys.argv) < 3: sys.exit(1)
+    generate_image_file(sys.argv[1], sys.argv[2], 
+                       sys.argv[3] if len(sys.argv)>3 else None,
+                       sys.argv[4] if len(sys.argv)>4 else None,
+                       sys.argv[5] if len(sys.argv)>5 else None)
