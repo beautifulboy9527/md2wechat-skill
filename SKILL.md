@@ -32,7 +32,8 @@ Always check if the user wants a specific theme or cover.
 theme: chinese-scroll  # Options: default, chinese-scroll, fashion-bold, ocean-calm, twilight
 cover:
   prompt: "A beautiful landscape"
-  style: art
+  style: illustration  # Options: illustration, tech, art, fashion, cute, industrial, retro, nature
+  sub_style: notion    # Options for illustration: notion, flat, watercolor, chalkboard, clay
 ---
 ```
 
@@ -74,6 +75,54 @@ Renders the entire article as a series of images (good for posters).
 python skill/md2wechat/scripts/build.py <input_file.md> --mode image --upload
 ```
 
+### 📕 Xiaohongshu Card Mode (NEW!)
+Generate 3:4 ratio cards optimized for Xiaohongshu (小红书).
+
+**Key Features:**
+- **3:4 Aspect Ratio**: Perfect 1080x1440px cards
+- **Gradient Background**: Eye-catching pastel gradients
+- **Section Splitting**: Use `---` to split content into multiple cards
+- **Auto Naming**: First card = `cover.png`, others = `card_1.png`, `card_2.png`...
+
+**Usage:**
+```bash
+python skill/md2wechat/scripts/build.py <input_file.md> --platform xhs --mode image
+```
+
+**Markdown Structure:**
+```markdown
+---
+title: Your Title
+theme: xhs-card
+---
+
+# Main Title
+Introduction text...
+
+---
+
+## Section 1
+Content for card 1...
+
+---
+
+## Section 2
+Content for card 2...
+
+---
+
+#Tags #小红书 #AI工具
+```
+
+**Publishing to XHS:**
+After generating cards, use `xiaohongshu-publisher-skill` to publish:
+```bash
+python ../xiaohongshu-publisher-skill/publish.py \
+  --title "Your Title" \
+  --content "Description" \
+  --images cover.png card_1.png card_2.png
+```
+
 ## 🎨 Theme List
 
 *   `default`: Clean, standard.
@@ -82,6 +131,7 @@ python skill/md2wechat/scripts/build.py <input_file.md> --mode image --upload
 *   `ocean-calm`: Blue tones, professional.
 *   `twilight`: Dark mode, tech-focused.
 *   `autumn-warm`: Warm colors, emotional.
+*   `xhs-card`: **NEW!** Xiaohongshu optimized (3:4 ratio, gradient background).
 
 ## ⚙️ Configuration (md2wechat.yaml)
 

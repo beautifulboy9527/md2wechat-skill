@@ -656,3 +656,81 @@ def convert_markdown_to_wechat(markdown_content, theme_name="default", themes_di
     except Exception as e:
         print(f"⚠️ CSS Inlining failed: {e}")
         return full_html
+
+def split_html_by_sections(html_content, card_mode=False):
+    """
+    Split HTML content by --- separator for XHS card rendering.
+    Returns a list of HTML sections, each wrapped in a full HTML document.
+    
+    Args:
+        html_content: Full HTML document string
+        card_mode: If True, extract body content and split by <hr> tags
+    
+    Returns:
+        List of HTML strings, each a complete document
+    """
+    if not card_mode:
+        return [html_content]
+    
+    # Extract body content
+    soup = BeautifulSoup(html_content, 'html.parser')
+    
+    # Get the CSS from head
+    css = ""
+    style_tags = soup.find_all('style')
+    for style in style_tags:
+        css += style.string or ""
+    
+    # Get body content
+    body = soup.body
+    if not body:
+        return [html_content]
+    
+    # Split by <hr> tags (which come from --- in markdown)
+    sections = []
+    current_section = []
+    
+    for element in body.children:
+        if element.name == 'hr':
+            # Save current section
+            if current_section:
+                sections.append(current_section)
+                current_section = []
+        else:
+            current_section.append(element)
+    
+    # Don't forget the last section
+    if current_section:
+        sections.append(current_section)
+    
+    # If no <hr> found, treat entire body as one section
+    if not sections:
+        sections = [[child for child in body.children]]
+    
+    # Wrap each section in a full HTML document
+    wrapped_sections = []
+    for i, section in enumerate(sections):
+        section_html = f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=1080, initial-scale=1.0">
+    <style>
+        {css}
+    </style>
+</head>
+<body>
+    <table width="100%" cellspacing="0" cellpadding="0" border="0">
+        <tr>
+            <td class="main-container">
+                {''.join(str(elem) for elem in section)}
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+        """
+        wrapped_sections.append(section_html)
+    
+    return wrapped_sections

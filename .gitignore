@@ -1,21 +1,62 @@
 # Configuration with secrets
 md2wechat.yaml
 .md2wechat.yaml
+*.yaml
+!md2wechat.example.yaml
+!themes/*.yaml
 
 # Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
 
 # Generated Assets
 cover.jpg
+cover.png
+card_*.png
 *_wechat.html
+*_xhs.html
 temp_*
 assets/generated/
+
 # Ignore root level images that might be generated
 /*.jpg
 /*.png
+/*.webp
 !assets/donate_qr.jpg
+
+# Test files
+test_*.py
+*_test.py
+tests/
+.pytest_cache/
+
+# Logs and drafts
+*.log
+drafts/*/
+!drafts/.gitkeep
 
 # Editor
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment
+.env
+.venv
+venv/
+ENV/

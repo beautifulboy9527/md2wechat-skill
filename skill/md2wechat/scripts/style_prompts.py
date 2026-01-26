@@ -9,7 +9,8 @@ IMAGE_STYLES = {
             "sci_fi": "mechanical edges, streamline design, neon accents, sharp corners, metal texture, chip patterns, industrial lighting",
             "virtual": "dark background, digital deconstruction, cut lines, future tech visual, volumetric lighting",
             "data": "dark blue tech background, digital matrix, holographic projection, circuit board elements, depth of field",
-            "blueprint": "blue engineering blueprint background, technical lines, precise geometric structure, white highlight text, schematic view"
+            "blueprint": "precise technical blueprint style, engineering aesthetic, precise lines with consistent stroke weights, technical schematics, clean vector graphics, dimension lines, measurement indicators, grid alignment, geometric precision, clean sans-serif hand lettering, engineering blue and white",
+            "hologram": "dark tech background, holographic rainbow effect, spectral gradient, futuristic, ethereal glow"
         }
     },
     "art": {
@@ -19,22 +20,24 @@ IMAGE_STYLES = {
             "ink": "traditional chinese ink painting, watercolor, scroll style, minimalist, zen, negative space, wet wash",
             "impressionism": "soft natural light, impressionist painting texture, dappled light and shadow, warm atmosphere, visible brushstrokes",
             "smoke": "light smoke curling, semi-transparent gradient, flowing texture, hazy atmosphere, ethereal",
-            "flowing_gaze": "minimalist line art, vintage book cover aesthetic, woodcut texture, stippling shading, radical perspective shift, worm's eye view or top-down view, vast negative space, surreal, melancholic"
+            "flowing_gaze": "minimalist line art, vintage book cover aesthetic, woodcut texture, stippling shading, radical perspective shift, worm's eye view or top-down view, vast negative space, surreal, melancholic",
+            "washi": "traditional japanese paper texture, brush calligraphy, zen negative space, tea room atmosphere, soft fibers",
+            "paper_cut": "festive red background, traditional paper cutting craft, gold accents, auspicious clouds, layered paper depth"
         }
     },
     "fashion": {
         "name": "时尚杂志",
         "prompt_suffix": ", high fashion photography, vogue style, bold colors, high contrast, studio lighting, professional color grading",
         "sub_styles": {
-            "bold": "neon colors, dark background, geometric shapes, asymmetric composition, cyberpunk vibes, rim lighting",
-            "minimal": "clean white background, helvetica font, minimalist composition, high key lighting, soft shadows"
+            "bold": "high impact, attention-grabbing, vibrant red orange yellow palette, dark background, exclamation marks, arrows, warning icons, strong shapes, high contrast elements, dramatic compositions, bold impactful hand lettering",
+            "minimal": "ultra-clean, sophisticated, black and white with single accent color, single focal point, thin lines, maximum whitespace, simple clean decorations, clean simple hand lettering"
         }
     },
     "cute": {
         "name": "活泼可爱",
         "prompt_suffix": ", cute, colorful, vibrant, cartoon style, soft lighting, 3d render, clay texture, c4d render",
         "sub_styles": {
-            "pop": "bright summer colors, lively hand-drawn style, watercolor splash, scene elements, dynamic composition",
+            "pop": "vibrant, energetic, eye-catching, bright red yellow blue palette, bold shapes, speech bubbles, comic-style effects, starburst, dynamic energetic compositions, dynamic hand lettering with outlines",
             "candy": "bright candy colors, candy collage, colorful, sweet atmosphere, pastel tones",
             "doodle": "colorful graffiti art, thick bold outlines, dynamic structure, hand-drawn print style, marker texture"
         }
@@ -51,9 +54,10 @@ IMAGE_STYLES = {
         "name": "复古怀旧",
         "prompt_suffix": ", retro, vintage, old photo, grainy, noise, classic, 1980s style, film photography",
         "sub_styles": {
-            "pixel": "retro game pixel style, bright contrast colors, block splicing, castle game scene, 8-bit",
+            "pixel": "retro 8-bit pixel art aesthetic, nostalgic gaming style, visible pixel structure, simple iconography, text bubbles with pixel borders, progress bars with chunky segments, dithering patterns, limited 16-32 color palette, pixelated bitmap font style",
             "classic": "gothic variation, slender vertical proportions, sharp straight lines, rich decorative details, etching style",
-            "woodblock": "natural rough edges, strong wood carving feel, warm and rustic atmosphere, linocut"
+            "woodblock": "natural rough edges, strong wood carving feel, warm and rustic atmosphere, linocut",
+            "mosaic": "retro tile collage, square pixel structure, color blocks, retro gaming feel, ceramic texture"
         }
     },
     "nature": {
@@ -61,7 +65,27 @@ IMAGE_STYLES = {
         "prompt_suffix": ", nature, organic, plants, flowers, landscape, natural light, photorealistic, macro photography",
         "sub_styles": {
             "wood": "forest green background, wood texture, organic natural form, vine leaf decoration, sunlight filtering through leaves",
-            "frost": "winter snow background, ice crystal effect, cold tone, semi-transparent texture, bokeh"
+            "frost": "winter snow background, ice crystal effect, cold tone, semi-transparent texture, bokeh",
+            "stardust": "deep space galaxy, stardust particles, milky way light, cosmic energy, nebula"
+        }
+    },
+    "illustration": {
+        "name": "插画风格",
+        "prompt_suffix": ", high quality illustration, vector art, clean lines, professional design, trending on dribbble",
+        "sub_styles": {
+            "notion": "minimalist hand-drawn line art, intellectual style, clean SaaS dashboard aesthetic, simple line doodles, hand-drawn wobble effect, geometric shapes, stick figures, maximum whitespace, single-weight ink lines, clean hand-drawn lettering, black and white with pastel accents",
+            "flat": "cute simple doodle illustrations, bold black outlines, simple flat shapes, no shading, cute rounded proportions, productivity-themed icons, isolated elements on white background, minimal decorative details, bright pastel colors",
+            "watercolor": "soft watercolor illustration style, hand-painted textures, watercolor washes, visible brush strokes, natural elements, leaves flowers organic shapes, color bleeds, soft edges, elegant handwritten script, soft coral and dusty rose palette",
+            "chalkboard": "black chalkboard background, colorful chalk drawing style, hand-drawn chalk illustrations, sketchy imperfect lines, chalk dust effects, eraser smudges, white or bright colored chalk text, authentic chalkboard texture",
+            "clay": "3d claymation style, soft plasticine texture, rounded edges, fingerprint details, stop-motion aesthetic, soft studio lighting, pastel colors, cute and playful"
+        }
+    },
+    "graphic_recording": {
+        "name": "视觉记录",
+        "prompt_suffix": ", graphic recording style, visual thinking, hand-drawn sketch, white background, black fine-tip pen outlines, colored markers (cyan, orange, soft red), visual metaphors, arrows connecting ideas, clear structure, business doodle style",
+        "sub_styles": {
+            "default": "clean white paper, marker coloring, mind map structure",
+            "sketch": "rough pencil sketch, artistic, creative process feel"
         }
     }
 }
@@ -326,6 +350,199 @@ MAGAZINE_TEMPLATE = """
 </html>
 """
 
+XHS_CARD_TEMPLATE = """
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=750, initial-scale=1.0">
+    <title>XHS Card</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+        body {
+            margin: 0; padding: 0;
+            width: 750px; height: 1334px;
+            background: linear-gradient(135deg, #F8BBD9 0%, #E4A0B7 50%, #C7CEEA 100%);
+            font-family: 'Noto Sans SC', sans-serif;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .card {
+            width: 650px; height: 1200px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            position: relative;
+            display: flex; flex-direction: column;
+        }
+        .header { margin-bottom: 40px; text-align: center; }
+        h1 { font-size: 56px; color: #1A1A1A; margin: 0 0 20px 0; letter-spacing: -1px; }
+        .subtitle { font-size: 32px; color: #555; font-weight: 500; }
+        .content { flex: 1; font-size: 28px; line-height: 1.6; color: #333; }
+        .highlight { color: #FF6B35; font-weight: bold; }
+        .footer { margin-top: auto; text-align: center; font-size: 24px; color: #888; }
+        .decoration {
+            position: absolute; width: 200px; height: 200px;
+            background: linear-gradient(45deg, #A8DADC, #457B9D);
+            border-radius: 50%; filter: blur(40px); opacity: 0.6;
+            top: -50px; right: -50px; z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="decoration"></div>
+    <div class="card">
+        <div class="header">
+            <h1>{{ title }}</h1>
+            <div class="subtitle">✨ 核心知识点 ✨</div>
+        </div>
+        <div class="content">
+            {{ content }}
+        </div>
+        <div class="footer">
+            @Antigravity • 知识分享
+        </div>
+    </div>
+</body>
+</html>
+"""
+
+VINTAGE_CARD_TEMPLATE = """
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=750, initial-scale=1.0">
+    <title>Vintage Card</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Long+Cang&display=swap');
+        body {
+            margin: 0; padding: 0;
+            width: 750px; height: 1334px;
+            background-color: #F5F5DC;
+            background-image: linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            font-family: 'Noto Serif SC', serif;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .paper {
+            width: 650px; height: 1200px;
+            background: #FFFFF0;
+            padding: 60px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid #D2B48C;
+            position: relative;
+        }
+        .paper::before {
+            content: ''; position: absolute; top: 0; left: 40px; bottom: 0; width: 2px;
+            background: #FF9999; opacity: 0.5;
+        }
+        h1 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 52px; color: #2F4F4F;
+            border-bottom: 3px double #2F4F4F;
+            padding-bottom: 20px; margin-bottom: 40px;
+            text-align: center;
+        }
+        .content { font-size: 26px; line-height: 1.8; color: #333; }
+        .handwritten {
+            font-family: 'Long Cang', cursive;
+            color: #8B4513; font-size: 30px;
+            transform: rotate(-2deg);
+            display: inline-block;
+        }
+        .stamp {
+            position: absolute; bottom: 60px; right: 60px;
+            border: 3px solid #B22222; color: #B22222;
+            padding: 10px 20px; font-weight: bold;
+            transform: rotate(-15deg); opacity: 0.8;
+            font-size: 24px; border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="paper">
+        <h1>{{ title }}</h1>
+        <div class="content">
+            {{ content }}
+            <br><br>
+            <p class="handwritten">Notes: 重点记忆</p>
+        </div>
+        <div class="stamp">APPROVED</div>
+    </div>
+</body>
+</html>
+"""
+
+MEMPHIS_CARD_TEMPLATE = """
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=750, initial-scale=1.0">
+    <title>Memphis Card</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@900&display=swap');
+        body {
+            margin: 0; padding: 0;
+            width: 750px; height: 1334px;
+            background: #FFF;
+            font-family: 'Noto Sans SC', sans-serif;
+            overflow: hidden;
+        }
+        .shape1 {
+            position: absolute; top: -100px; right: -100px;
+            width: 400px; height: 400px; background: #FFDD00;
+            border-radius: 50%; border: 4px solid #000;
+        }
+        .shape2 {
+            position: absolute; bottom: 100px; left: -50px;
+            width: 300px; height: 300px; background: #0052FF;
+            transform: rotate(45deg); border: 4px solid #000;
+        }
+        .card {
+            position: relative; z-index: 10;
+            margin: 100px 50px;
+            background: #FFF;
+            border: 4px solid #000;
+            box-shadow: 15px 15px 0 #000;
+            padding: 40px;
+            height: 1000px;
+        }
+        h1 {
+            font-size: 60px; line-height: 1.2; margin-bottom: 40px;
+            color: #000; text-transform: uppercase;
+            background: #FF69B4; display: inline;
+            box-shadow: 5px 5px 0 #000;
+            padding: 5px 10px;
+        }
+        .content {
+            font-size: 28px; line-height: 1.6; color: #000; margin-top: 40px;
+            font-weight: bold;
+        }
+        .dots {
+            position: absolute; top: 20px; left: 20px;
+            width: 100px; height: 100px;
+            background-image: radial-gradient(#000 20%, transparent 20%);
+            background-size: 10px 10px; opacity: 0.2;
+        }
+    </style>
+</head>
+<body>
+    <div class="shape1"></div>
+    <div class="shape2"></div>
+    <div class="card">
+        <div class="dots"></div>
+        <h1>{{ title }}</h1>
+        <div class="content">
+            {{ content }}
+        </div>
+    </div>
+</body>
+</html>
+"""
+
 # Theme Mapping Configuration
 THEME_MAPPING = {
     "default": {
@@ -362,6 +579,21 @@ THEME_MAPPING = {
         "image_style": "fashion",
         "image_sub_style": "bold",
         "html_template": "magazine"
+    },
+    "xhs-note": {
+        "image_style": "cute",
+        "image_sub_style": "pop",
+        "html_template": "xhs"
+    },
+    "vintage-journal": {
+        "image_style": "retro",
+        "image_sub_style": "woodblock",
+        "html_template": "vintage"
+    },
+    "memphis-pop": {
+        "image_style": "cute",
+        "image_sub_style": "pop",
+        "html_template": "memphis"
     }
 }
 
@@ -389,6 +621,12 @@ def get_html_template(template_name):
         return ORIENTAL_CARD_TEMPLATE
     elif template_name == "magazine":
         return MAGAZINE_TEMPLATE
+    elif template_name == "xhs":
+        return XHS_CARD_TEMPLATE
+    elif template_name == "vintage":
+        return VINTAGE_CARD_TEMPLATE
+    elif template_name == "memphis":
+        return MEMPHIS_CARD_TEMPLATE
     return APPLE_BENTO_TEMPLATE # Default
 
 def get_theme_config(theme_name):

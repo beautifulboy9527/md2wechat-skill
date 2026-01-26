@@ -56,12 +56,13 @@ def load_global_config():
                 return yaml.safe_load(f)
     return {}
 
-def build_article(input_file, output_file=None, upload=False, mode="text"):
+def build_article(input_file, output_file=None, upload=False, mode="text", platform="wechat"):
     if not os.path.exists(input_file):
         print(f"Error: File {input_file} not found.")
         return
 
-    print(f"🔨 Building {input_file} in [{mode.upper()}] mode...")
+    print(f"🔨 Building {input_file} for [{platform.upper()}] in [{mode.upper()}] mode...")
+
 
 
     # 0. Load Global Config
@@ -77,32 +78,51 @@ def build_article(input_file, output_file=None, upload=False, mode="text"):
     config = global_config.copy()
     config.update(fm_config)
     
-    # Defaults
-    theme = config.get("theme", "default")
+    # Platform-specific defaults
+    if platform == "xhs":
+        theme = config.get("theme", "xhs-card")
+    else:
+        theme = config.get("theme", "default")
 
     
     # Determine Output Filename
     if not output_file:
         base_name = os.path.splitext(os.path.basename(input_file))[0]
-        output_file = f"{base_name}_wechat.html"
+        if platform == "xhs":
+            output_file = f"{base_name}_xhs.html"
+        else:
+            output_file = f"{base_name}_wechat.html"
     
     # 3. Asset Generation (Pre-processing)
     # Check for Cover Generation
+    # 3. Asset Generation (Pre-processing)
+    # Check for Cover Generation
     cover_config = config.get("cover")
+    final_cover_path = None
+
     if cover_config:
-        print("🎨 Generating Cover Image...")
-        prompt = cover_config.get("prompt", "A nice cover image")
-        style = cover_config.get("style", None)
-        sub_style = cover_config.get("sub_style", None)
-        size = cover_config.get("size", "16:9") # Default to 16:9 for cover
-        cover_path = "cover.jpg" 
-        
-        try:
-            # Generate local cover file
-            generate_image.generate_image_file(prompt, cover_path, style, sub_style, size)
-            print(f"✅ Cover generated: {cover_path}")
-        except Exception as e:
-            print(f"⚠️ Cover generation failed: {e}") 
+        if isinstance(cover_config, str):
+            final_cover_path = cover_config
+            print(f"✅ Using provided cover path: {final_cover_path}")
+        elif isinstance(cover_config, dict):
+            if cover_config.get("path"):
+                final_cover_path = cover_config.get("path")
+                print(f"✅ Using provided cover path: {final_cover_path}")
+            else:
+                print("🎨 Generating Cover Image...")
+                prompt = cover_config.get("prompt", "A nice cover image")
+                style = cover_config.get("style", None)
+                sub_style = cover_config.get("sub_style", None)
+                size = cover_config.get("size", "16:9") # Default to 16:9 for cover
+                cover_path = "cover.jpg" 
+                
+                try:
+                    # Generate local cover file
+                    generate_image.generate_image_file(prompt, cover_path, style, sub_style, size)
+                    print(f"✅ Cover generated: {cover_path}")
+                    final_cover_path = cover_path
+                except Exception as e:
+                    print(f"⚠️ Cover generation failed: {e}") 
 
     # 3. Conversion (Markdown -> HTML)
     print(f"📝 Converting Markdown using theme: {theme}...")
@@ -181,9 +201,25 @@ def build_article(input_file, output_file=None, upload=False, mode="text"):
         script_path = os.path.join(os.path.dirname(__file__), "html_to_image.py")
         
         # 2. Render each section
+        # Platform-specific dimensions
+        if platform == "xhs":
+            card_width = 1080
+            card_height = 1440  # 3:4 ratio for Xiaohongshu
+        else:
+            card_width = 1080
+            card_height = None  # Auto height for WeChat
+        
         for i, section_html in enumerate(sections):
             print(f"   Rendering Card {i+1}/{len(sections)}...")
-            card_path = f"{os.path.splitext(output_file)[0]}_card_{i}.png"
+            
+            # Platform-specific naming
+            if platform == "xhs":
+                if i == 0:
+                    card_path = f"cover.png"
+                else:
+                    card_path = f"card_{i}.png"
+            else:
+                card_path = f"{os.path.splitext(output_file)[0]}_card_{i}.png"
             
             # Write section to temp file for rendering
             temp_card_html = f"temp_card_{i}.html"
@@ -191,11 +227,12 @@ def build_article(input_file, output_file=None, upload=False, mode="text"):
                 f.write(section_html)
                 
             try:
-                # Render
-                subprocess.run(
-                    ["python", script_path, temp_card_html, card_path, "--width", "1080"],
-                    check=True
-                )
+                # Render with platform-specific dimensions
+                cmd = ["python", script_path, temp_card_html, card_path, "--width", str(card_width)]
+                if card_height:
+                    cmd.extend(["--height", str(card_height)])
+                
+                subprocess.run(cmd, check=True)
                 card_images.append(card_path)
             except subprocess.CalledProcessError:
                 print(f"❌ Failed to render Card {i}.")
@@ -235,11 +272,15 @@ def build_article(input_file, output_file=None, upload=False, mode="text"):
                 
                 # A. Upload Cover
                 cover_media_id = None
-                if cover_config: 
-                    cover_path = "cover.jpg"
-                    if os.path.exists(cover_path):
-                        print("📤 Uploading cover image...")
-                        cover_media_id, _ = uploader.upload_image(cover_path)
+                if final_cover_path and os.path.exists(final_cover_path):
+                    print(f"📤 Uploading cover image: {final_cover_path}")
+                    cover_media_id, _ = uploader.upload_image(final_cover_path)
+                elif cover_config:
+                    # Fallback if final_cover_path was not set but cover_config exists (e.g. generation failed)
+                    # Try default 'cover.jpg' just in case
+                    if os.path.exists("cover.jpg"):
+                         print("📤 Uploading default cover.jpg...")
+                         cover_media_id, _ = uploader.upload_image("cover.jpg")
                 
                 # B. Process Content Images (Works for both Text mode and Image mode!)
                 # In Image mode, it will find the slice images and upload them.
@@ -279,13 +320,14 @@ def build_article(input_file, output_file=None, upload=False, mode="text"):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Build WeChat Article from Markdown")
+    parser = argparse.ArgumentParser(description="Build Article from Markdown for WeChat or Xiaohongshu")
     parser.add_argument("input_file", help="Input Markdown file")
     parser.add_argument("--output", help="Output HTML file")
-    parser.add_argument("--upload", action="store_true", help="Upload to WeChat Draft")
-    parser.add_argument("--mode", choices=["text", "image"], default="text", help="Output mode: text (default) or image (full page screenshot)")
+    parser.add_argument("--upload", action="store_true", help="Upload to platform (WeChat Draft or XHS)")
+    parser.add_argument("--mode", choices=["text", "image"], default="text", help="Output mode: text (default) or image (card rendering)")
+    parser.add_argument("--platform", choices=["wechat", "xhs"], default="wechat", help="Target platform: wechat (default) or xhs (Xiaohongshu)")
     
     args = parser.parse_args()
-    build_article(args.input_file, args.output, args.upload, args.mode)
+    build_article(args.input_file, args.output, args.upload, args.mode, args.platform)
 
 
